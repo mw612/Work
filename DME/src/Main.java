@@ -1,4 +1,9 @@
-//Entry Point
+/*
+ * Main Java Class
+ * EntryPoint for Application
+ */
+
+
 public class Main {
 
 	public static void main(String[] args) {
