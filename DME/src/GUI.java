@@ -298,7 +298,9 @@ public class GUI {
                     System.out.println("Überschrift/Zeilenbeschriftung");
                     return;
                 }
-
+                
+                //Prüfen ob SN Feld ausreichend gefüllt, sonst aus Scanner input ziehen
+                if(tf_seriennummer.getText().length()<13) tf_seriennummer.setText(tf_scannerInput.getText().substring(0, 13));
 
                 excelFile.writeCell(rowNumber, 0, tf_beschaffungsdatum.getText());
                 excelFile.writeCell(rowNumber, 1, tf_beschaffer.getText());
