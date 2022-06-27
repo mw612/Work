@@ -2,6 +2,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -290,7 +293,6 @@ public class GUI {
 
                 WriteExcelFile excelFile = new WriteExcelFile(path);
                 int rowNumber = excelFile.searchSerialNumber(tf_scannerInput.getText());
-                System.out.println(rowNumber);
                 //Zeile 0/1 sind Überschrift + Zellen bezeichnung
                 if( rowNumber == 0 || rowNumber == 1){
                     System.out.println("Überschrift/Zeilenbeschriftung");
@@ -317,7 +319,31 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PrintJasper pj = new PrintJasper();
-				pj.reparaturSchein();	
+				ReadExcelFile re = new ReadExcelFile(path);
+				WriteExcelFile we = new WriteExcelFile(path);
+				DataBeanList dbl= new DataBeanList();
+				ArrayList<Integer> rowList = re.searchRowsRepair();
+				
+				
+				if(rowList == null) {
+					System.out.println("Keine Melder im Status Reparatur - Ausgang");
+					return;
+				}
+				
+				//Sucht die ZellenWerte der zur Reparatur gehenden Melder raus
+				//und leitet sie an JasperReports weiter.
+				for(int i = 0; i< rowList.size(); i++) {
+					dbl.add(re.cellValue(rowList.get(i), 3), re.cellValue(rowList.get(i), 5), re.cellValue(rowList.get(i), 8));
+					//Schreibt in die Exceltabelle den Status Reparatur - In Bearbeitung
+					we.writeCell(rowList.get(i), 6, "Reparatur - in Bearbeitung");
+				}
+				pj.printReparaturSchein(dbl);
+				Desktop desk = Desktop.getDesktop();
+				try {
+					desk.open(new File(pj.getPdfExport()));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				
 			}
         	

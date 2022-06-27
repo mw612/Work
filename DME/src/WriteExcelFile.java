@@ -2,7 +2,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import javax.swing.JOptionPane;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -27,12 +31,14 @@ public class WriteExcelFile {
             wb = new XSSFWorkbook(fis);
         }
         catch(IOException ioEx){
-            ioEx.getStackTrace();
+        	JOptionPane.showMessageDialog(null, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
+        	ioEx.printStackTrace();
+        	System.exit(11);
         }
     }
 
     public int searchSerialNumber(String serialNumber){
-        //Falls Artikelnummern beim Scannen angehangen ist. Kürzen auf 13. Stelle
+        //Falls Artikelnummern beim Scannen angehangen ist, Kürzen auf 13. Stelle
         serialNumber = serialNumber.substring(0, 13);
 
         sheet= wb.getSheetAt(0);
@@ -46,7 +52,7 @@ public class WriteExcelFile {
             }
           }
         }
-
+        //Anders als ReadExcelFile wird beim nicht Auffinden eine Reihe erstellt.
         int newRowNum = sheet.getLastRowNum()+1;
         sheet.createRow(newRowNum);
         Row newRow =  sheet.getRow(newRowNum);
@@ -62,20 +68,26 @@ public class WriteExcelFile {
         sheet = wb.getSheetAt(0);
         Row row = sheet.getRow(rowNumber);
         Cell cell = row.getCell(cellNumber);
+        
+        //Aktuelles Datum als String
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        Date date = new Date();
+        
         if(cell != null){
             cell.setCellValue(cellValue);
+            //Bei jeder geshriebenen Celle wird für die Reihe das aktuelle Datum gesetzt.
+            row.getCell(7).setCellValue(dateFormat.format(date));
         }
         try {
             fos = new FileOutputStream(file);
             wb.write(fos);
         } catch (IOException e) {
-            e.printStackTrace();
+        	JOptionPane.showMessageDialog(null, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
+        	e.printStackTrace();
+        	System.exit(10);
         }
     }
-
-
-
-
+    
     public void closeFISFOS(){
         if(fis != null){
             try {
