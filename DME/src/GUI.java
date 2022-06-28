@@ -23,6 +23,7 @@ public class GUI {
     private String title;
     private JFrame mainWindow;
     private JPanel mainPanel;
+    private JPanel dmeMainButtonPanel;
     private JPanel dmeButtonPanel;
     private JPanel dmeContentPanel;
     private JPanel dmeContainerPanel;
@@ -31,7 +32,6 @@ public class GUI {
     private JButton 	bt_repair;
     private JButton     bt_handingover;
 
-    private JLabel      lb_DME_Panel_Title;
     private JLabel      lb_scanner;
     private JLabel      lb_beschaffungsdatum;
     private JLabel      lb_beschaffer;
@@ -164,12 +164,14 @@ public class GUI {
         mainWindow          = new JFrame(title);
         mainPanel           = new JPanel();
         dmeContentPanel     = new JPanel();
+        dmeMainButtonPanel  = new JPanel();
         dmeButtonPanel      = new JPanel();
         dmeContainerPanel   = new JPanel();
 
         mainPanel.setLayout(        new FlowLayout());
         dmeContentPanel.setLayout(  new GridLayout(0,2));
-        dmeButtonPanel.setLayout(   new GridLayout(0,2));
+        dmeMainButtonPanel.setLayout(   new BorderLayout());
+        dmeButtonPanel.setLayout(   new GridLayout(0,3));
         dmeContainerPanel.setLayout(new BorderLayout());
 
 
@@ -194,7 +196,6 @@ public class GUI {
         bt_repair				= new JButton(   "Reparatur");
         bt_handingover         	= new JButton(   "DME Ausgeben");
 
-        lb_DME_Panel_Title     	= new JLabel(    "DME Inventur");
         lb_scanner             	= new JLabel(    "Scanner Input:");
         lb_beschaffungsdatum   	= new JLabel(    "Beschaffungsdatum:");
         lb_beschaffer          	= new JLabel(    "Beschaffer:");
@@ -222,6 +223,9 @@ public class GUI {
 
         dmeContentPanel.add(lb_scanner);
         dmeContentPanel.add(tf_scannerInput);
+        //2x, da Grid Layout (0,2)
+        dmeContentPanel.add(Box.createHorizontalStrut(10));
+        dmeContentPanel.add(Box.createHorizontalStrut(10));
         dmeContentPanel.add(lb_beschaffungsdatum);
         dmeContentPanel.add(tf_beschaffungsdatum);
         dmeContentPanel.add(lb_beschaffer);
@@ -240,16 +244,20 @@ public class GUI {
         dmeContentPanel.add(tf_bemerkung);
         dmeContentPanel.add(lb_location);
         dmeContentPanel.add(cb_location);
+        dmeContentPanel.add(Box.createHorizontalStrut(10));
+        dmeContentPanel.add(Box.createHorizontalStrut(10));
+  
+        dmeMainButtonPanel.add(bt_save,							BorderLayout.NORTH);
+        dmeMainButtonPanel.add(Box.createHorizontalStrut(10),	BorderLayout.CENTER);
 
-        dmeButtonPanel.add(bt_save);
+        
         dmeButtonPanel.add(bt_repair);
         dmeButtonPanel.add(bt_handingover);
         
         
         
-
-        dmeContainerPanel.add(lb_DME_Panel_Title,   BorderLayout.NORTH);
-        dmeContainerPanel.add(dmeContentPanel,      BorderLayout.CENTER);
+        dmeContainerPanel.add(dmeContentPanel,      BorderLayout.NORTH);
+        dmeContainerPanel.add(dmeMainButtonPanel,   BorderLayout.CENTER);
         dmeContainerPanel.add(dmeButtonPanel,       BorderLayout.SOUTH);
 
 
@@ -360,6 +368,9 @@ public class GUI {
                 excelFile.writeCell(rowNumber, 8, tf_bemerkung.getText());
 
                 excelFile.closeFISFOS();
+                
+                
+                focusOnScannerInput();
             }
         });
         
@@ -396,7 +407,8 @@ public class GUI {
 				
 				re.closeFIS();
 				we.closeFISFOS();
-			
+				
+				focusOnScannerInput();
 			}
         	
         });
@@ -427,25 +439,16 @@ public class GUI {
 					e1.printStackTrace();
 				}
 				
-				
+				focusOnScannerInput();
 			}
         	
+			
         });
         
     }
     
 
-    private void clearFields(){
-        tf_beschaffungsdatum.setText("");
-        tf_beschaffer.setText("");
-        tf_preis.setText("");
-        cb_melderTyp.setSelectedItem("");
-        tf_preis.setText("");
-        tf_seriennummer.setText("");
-        cb_location.setSelectedItem("");
-        tf_datum.setText("");
-        tf_bemerkung.setText("");
-    }
+    
 
 
     private String dateFormat(String s){
@@ -465,6 +468,24 @@ public class GUI {
 								re.cellValue(dmeAusgabeListe.get(row), 5),
 								re.cellValue(dmeAusgabeListe.get(row), 6),
 								re.cellValue(dmeAusgabeListe.get(row), 8));
+    }
+    
+    private void focusOnScannerInput() {
+    	tf_scannerInput.requestFocus();
+    	tf_scannerInput.selectAll();
+
+    }
+    
+    private void clearFields(){
+        tf_beschaffungsdatum.setText("");
+        tf_beschaffer.setText("");
+        tf_preis.setText("");
+        cb_melderTyp.setSelectedItem("");
+        tf_preis.setText("");
+        tf_seriennummer.setText("");
+        cb_location.setSelectedItem("");
+        tf_datum.setText("");
+        tf_bemerkung.setText("");
     }
     
     
