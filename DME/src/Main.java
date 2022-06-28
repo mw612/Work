@@ -16,9 +16,11 @@
 
 
 public class Main {
-
+	private static String pathDmeListe = "R:\\Technik\\Digitale Alarmierung\\DME-Test.xlsx"
+	
+	
 	public static void main(String[] args) {
-		GUI mainGUI = new GUI("Inventur", "R:\\Technik\\Digitale Alarmierung\\DME-Test.xlsx");
+		GUI mainGUI = new GUI("DME-Liste", pathDmeListe);
         mainGUI.create();
         mainGUI.loadWindow();
 

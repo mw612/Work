@@ -411,7 +411,7 @@ public class GUI {
 					dmeAusgabeListe.add(re.searchSerialNumber(tf_scannerInput.getText()));
 				}
 				
-				for(int i=0; i<dmeAusgabeListe.size(); i++{
+				for(int i=0; i<dmeAusgabeListe.size(); i++){
 					fillDataBean(re, dbl, i);
 				}
 				
