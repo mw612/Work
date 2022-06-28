@@ -380,10 +380,7 @@ public class GUI {
 				//Sucht die ZellenWerte der zur Reparatur gehenden Melder raus
 				//und leitet sie an JasperReports weiter.
 				for(int i = 0; i< rowList.size(); i++) {
-					dbl.add(	re.cellValue(rowList.get(i), 3), 
-								re.cellValue(rowList.get(i), 5),
-								re.cellValue(rowList.get(i), 6),
-								re.cellValue(rowList.get(i), 8));
+					addDataBean(re, dbl, i);
 					//Schreibt in die Exceltabelle den Status Reparatur - In Bearbeitung
 					we.writeCell(rowList.get(i), 6, "Reparatur - in Bearbeitung");
 				}
@@ -414,13 +411,10 @@ public class GUI {
 					dmeAusgabeListe.add(re.searchSerialNumber(tf_scannerInput.getText()));
 				}
 				
-				for(int i = 0; i < dmeAusgabeListe.size(); i++ ) {
-				
-					dbl.add(	re.cellValue(dmeAusgabeListe.get(i), 3), 
-								re.cellValue(dmeAusgabeListe.get(i), 5),
-								re.cellValue(dmeAusgabeListe.get(i), 6),
-								re.cellValue(dmeAusgabeListe.get(i), 8));
+				for(int i=0; i<dmeAusgabeListe.size(); i++{
+					fillDataBean(re, dbl, i);
 				}
+				
 				pj.dmeUebergabeSchein(dbl);
 				dmeAusgabeListe.clear();
 				
@@ -463,6 +457,16 @@ public class GUI {
 
         return parts[1] + "." + parts[0] + "." + parts[2];
     }
+    
+    private void addDataBean(ReadExcelFile re, DataBeanList dataBeanList, Integer row ) {
+			dataBeanList.add(	re.cellValue(dmeAusgabeListe.get(row), 3), 
+								re.cellValue(dmeAusgabeListe.get(row), 5),
+								re.cellValue(dmeAusgabeListe.get(row), 6),
+								re.cellValue(dmeAusgabeListe.get(row), 8));
+    }
+    
+    
+    
 }
 
 
