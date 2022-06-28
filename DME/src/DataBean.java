@@ -9,6 +9,7 @@ public class DataBean {
 	private String melderTyp;
 	private String seriennummer;
 	private String bemerkung;
+	private String location;
 	
 	public String getMelderTyp() { return melderTyp; }
 	public void setMelderTyp(String MelderTyp) { this.melderTyp = MelderTyp; }
@@ -18,4 +19,7 @@ public class DataBean {
 	
 	public String getBemerkung() { return bemerkung; }
 	public void setBemerkung(String Bemerkung) { this.bemerkung = Bemerkung; }
+	
+	public String getLocation() { return location; }
+	public void setLocation(String Location) { this.location = Location; }
 }

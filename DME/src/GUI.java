@@ -13,7 +13,12 @@ import javax.swing.event.DocumentListener;
 
 
 public class GUI {
-    private String path;
+	// *********************************************************************************
+	//
+	//GUI Elements
+    //
+	// *********************************************************************************
+	private String path;
 
     private String title;
     private JFrame mainWindow;
@@ -49,7 +54,14 @@ public class GUI {
     private JTextField  tf_bemerkung;
 
     private JComboBox<String>   cb_melderTyp;
-    private String cb_melderTyp_content[] = {"BOSS 910", "BOSS 915", "BOSS 915V", "BOSS 925", "BOSS 925V", ""};
+    private String cb_melderTyp_content[] = {	"BOSS 910", 
+    											"BOSS 915", 
+    											"BOSS 915V", 
+    											"BOSS 925",
+    											"BOSS 925V",
+    											"S-Quad X15",
+    											"S-Quad X15V",
+    											""};
 
     private JComboBox<String>   cb_location;
     private String cb_location_content[] =  {   "Reparatur - Ausgang",
@@ -123,7 +135,21 @@ public class GUI {
                                                 ""
                                             };
 
-
+	// *********************************************************************************
+	//
+	//  Class global variables
+    //
+	// *********************************************************************************
+    
+    //Speichern von Row Numbern, wenn Location gewechselt wird. Wird beim Aufrufen von DME Ausgeben (bt_handingover) genutzt und geleert.
+    private ArrayList<Integer> dmeAusgabeListe = new ArrayList<Integer>();
+    private String dmeLocationPuffer;
+    
+	// *********************************************************************************
+	//
+	//	Methods
+    //
+	// *********************************************************************************
 
 
     public GUI(String title, String path){
@@ -230,6 +256,12 @@ public class GUI {
 
     }
 
+    
+	// *********************************************************************************
+	//
+	//  Action Listener
+    //
+	// *********************************************************************************
 
     public void createListener(){
         //Programm beenden
@@ -270,6 +302,7 @@ public class GUI {
                     clearFields();
                     return;
                 }
+                
                 tf_beschaffungsdatum.setText(   excelFile.cellValue(rowNumber, 0));
                 tf_beschaffer.setText(          excelFile.cellValue(rowNumber, 1));
                 tf_preis.setText(               excelFile.cellValue(rowNumber, 2));
@@ -280,17 +313,23 @@ public class GUI {
                 tf_datum.setText(               dateFormat(excelFile.cellValue(rowNumber, 7)));
                 tf_bemerkung.setText(           excelFile.cellValue(rowNumber, 8));
                 
+                //Zwischenspeichern der Location -> Änderungen zur DME Ausgabe
+                dmeLocationPuffer = excelFile.cellValue(rowNumber, 6);
+
+                
                 excelFile.closeFIS();
             }
         });
 
         bt_save.addActionListener(new ActionListener() {
+        	
+        	
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(tf_scannerInput.getText() == null || tf_scannerInput.getText().length()<13 )
                     return;
-
+                
                 WriteExcelFile excelFile = new WriteExcelFile(path);
                 int rowNumber = excelFile.searchSerialNumber(tf_scannerInput.getText());
                 //Zeile 0/1 sind Überschrift + Zellen bezeichnung
@@ -300,8 +339,14 @@ public class GUI {
                 }
                 
                 //Prüfen ob SN Feld ausreichend gefüllt, sonst aus Scanner input ziehen
-                if(tf_seriennummer.getText().length()<13) tf_seriennummer.setText(tf_scannerInput.getText().substring(0, 13));
-
+                if(tf_seriennummer.getText().length()!=13) tf_seriennummer.setText(tf_scannerInput.getText().substring(0, 13));
+                
+                if(dmeLocationPuffer != cb_location.getSelectedItem().toString()){
+                	dmeAusgabeListe.add(rowNumber);
+                }
+                
+                
+                
                 excelFile.writeCell(rowNumber, 0, tf_beschaffungsdatum.getText());
                 excelFile.writeCell(rowNumber, 1, tf_beschaffer.getText());
                 excelFile.writeCell(rowNumber, 2, tf_preis.getText());
@@ -335,22 +380,56 @@ public class GUI {
 				//Sucht die ZellenWerte der zur Reparatur gehenden Melder raus
 				//und leitet sie an JasperReports weiter.
 				for(int i = 0; i< rowList.size(); i++) {
-					dbl.add(re.cellValue(rowList.get(i), 3), re.cellValue(rowList.get(i), 5), re.cellValue(rowList.get(i), 8));
+					dbl.add(	re.cellValue(rowList.get(i), 3), 
+								re.cellValue(rowList.get(i), 5),
+								re.cellValue(rowList.get(i), 6),
+								re.cellValue(rowList.get(i), 8));
 					//Schreibt in die Exceltabelle den Status Reparatur - In Bearbeitung
 					we.writeCell(rowList.get(i), 6, "Reparatur - in Bearbeitung");
 				}
 				pj.printReparaturSchein(dbl);
 				Desktop desk = Desktop.getDesktop();
 				try {
-					desk.open(new File(pj.getPdfExport()));
+					desk.open(new File(pj.getPdfExportReparatur()));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 				
+				re.closeFIS();
+				we.closeFISFOS();
+			
 			}
         	
         });
+        
+        bt_handingover.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PrintJasper pj = new PrintJasper();
+				ReadExcelFile re = new ReadExcelFile(path);
+				DataBeanList dbl = new DataBeanList();
+				
+				if(dmeAusgabeListe.size() == 0 || dmeAusgabeListe == null) {
+					dmeAusgabeListe.add(re.searchSerialNumber(tf_scannerInput.getText()));
+				}
+				
+				for(int i = 0; i < dmeAusgabeListe.size(); i++ ) {
+				
+					dbl.add(	re.cellValue(dmeAusgabeListe.get(i), 3), 
+								re.cellValue(dmeAusgabeListe.get(i), 5),
+								re.cellValue(dmeAusgabeListe.get(i), 6),
+								re.cellValue(dmeAusgabeListe.get(i), 8));
+				}
+				pj.dmeUebergabeSchein(dbl);
+				dmeAusgabeListe.clear();
+				
+			}
+        	
+        });
+        
     }
+    
 
     private void clearFields(){
         tf_beschaffungsdatum.setText("");

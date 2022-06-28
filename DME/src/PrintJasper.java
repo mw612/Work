@@ -16,8 +16,10 @@ public class PrintJasper {
 	
 	private String jasperFolder = "R:\\Vordrucke\\Jasper\\";
 	private String reparaturschein = "reparaturschein.jrxml";
+	private String uebergabeschein = "uebergabeschein.jrxml";
 	
-	private String pdfExport = "R:\\Technik\\Digitale Alarmierung\\Reparaturschein.pdf";
+	private String pdfExportReparatur = "R:\\Technik\\Digitale Alarmierung\\Reparaturschein.pdf";
+	private String pdfExportUebergabe = "R:\\Technik\\Digitale Alarmierung\\Uebergabeschein.pdf";
 	
 	JasperReport jasperReport = null;
 	JasperPrint printFileName = null;
@@ -47,7 +49,7 @@ public class PrintJasper {
 			printFileName = JasperFillManager.fillReport(jasperReport, hm, beanColDataSource);
 			
 			System.out.println("PDFFile");
-			JasperExportManager.exportReportToPdfFile(printFileName, pdfExport);
+			JasperExportManager.exportReportToPdfFile(printFileName, pdfExportReparatur);
 		} 
 		catch (JRException e) {
 			JOptionPane.showMessageDialog(null, "Jasper konnte kein PDF erstellen!\n\nDas Programm wird nach Bestätigung beendet.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -56,7 +58,41 @@ public class PrintJasper {
 		}
 	}
 	
-	public String getPdfExport() {
-		return pdfExport;
+	public void dmeUebergabeSchein(DataBeanList List) {
+		
+		try {
+			JasperDesign jasperDesign = JRXmlLoader.load(jasperFolder+uebergabeschein);
+			jasperReport = JasperCompileManager.compileReport(jasperDesign);
+		}
+		catch (JRException e) {
+			JOptionPane.showMessageDialog(null, "Das Jasper Formular konnte nicht geladen werden\\n\\nDas Programm wird nach Bestätigung beendet.", "Error", JOptionPane.ERROR_MESSAGE);
+        	e.printStackTrace();
+        	System.exit(20);
+		}	
+
+
+		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(List.getDataBeanArrayList());
+		HashMap<String, Object>	hm = new HashMap<String, Object>();
+		
+		System.out.print("Export: ");
+		try {
+			System.out.println("ReportFile");
+			printFileName = JasperFillManager.fillReport(jasperReport, hm, beanColDataSource);
+			
+			System.out.println("PDFFile");
+			JasperExportManager.exportReportToPdfFile(printFileName, pdfExportUebergabe);
+		} 
+		catch (JRException e) {
+			JOptionPane.showMessageDialog(null, "Jasper konnte kein PDF erstellen!\n\nDas Programm wird nach Bestätigung beendet.", "Error", JOptionPane.ERROR_MESSAGE);
+        	e.printStackTrace();
+        	System.exit(30);
+		}
+	}
+	
+	public String getPdfExportReparatur() {
+		return pdfExportReparatur;
+	}
+	public String getPdfExportUebergabe() {  
+		return pdfExportReparatur;
 	}
 }
