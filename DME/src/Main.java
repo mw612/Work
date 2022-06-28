@@ -16,7 +16,7 @@
 
 
 public class Main {
-	private static String pathDmeListe = "R:\\Technik\\Digitale Alarmierung\\DME-Test.xlsx"
+	private static String pathDmeListe = "R:\\Technik\\Digitale Alarmierung\\DME-Test.xlsx";
 	
 	
 	public static void main(String[] args) {

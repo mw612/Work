@@ -64,9 +64,9 @@ public class GUI {
     											""};
 
     private JComboBox<String>   cb_location;
-    private String cb_location_content[] =  {   "Reparatur - Ausgang",
+    private String cb_location_content[] =  {   "Lager",
+    											"Reparatur - Ausgang",
     											"Reparatur - in Bearbeitung",
-                                                "Lager",
                                                 "DN RTW 20",
                                                 "Dr. Kowalzik",
                                                 "DRK Düren EE 01",
@@ -131,6 +131,8 @@ public class GUI {
                                                 "OrgL Süd",
                                                 "RTW 03",
                                                 "RTW 21",
+                                                "Team Technik Jakobs",
+                                                "Team Technik Ruland",
                                                 "Team Technik Wirtz",
                                                 ""
                                             };
@@ -412,7 +414,7 @@ public class GUI {
 				}
 				
 				for(int i=0; i<dmeAusgabeListe.size(); i++){
-					fillDataBean(re, dbl, i);
+					addDataBean(re, dbl, i);
 				}
 				
 				pj.dmeUebergabeSchein(dbl);
