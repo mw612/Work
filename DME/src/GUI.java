@@ -424,6 +424,14 @@ public class GUI {
 				pj.dmeUebergabeSchein(dbl);
 				dmeAusgabeListe.clear();
 				
+				Desktop desk = Desktop.getDesktop();
+				try {
+					desk.open(new File(pj.getPdfExportUebergabe()));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				
 			}
         	
         });

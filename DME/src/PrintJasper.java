@@ -93,6 +93,6 @@ public class PrintJasper {
 		return pdfExportReparatur;
 	}
 	public String getPdfExportUebergabe() {  
-		return pdfExportReparatur;
+		return pdfExportUebergabe;
 	}
 }
