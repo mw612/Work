@@ -484,16 +484,22 @@ public class GUI {
     }
     
     private void addDataBean(ReadExcelFile re, DataBeanList dataBeanList, Integer row ) {
-			dataBeanList.add(	re.cellValue(dmeAusgabeListe.get(row), 3), 
+			dataBeanList.add(	"1x",
+								re.cellValue(dmeAusgabeListe.get(row), 0),
+								re.cellValue(dmeAusgabeListe.get(row), 1),
+								re.cellValue(dmeAusgabeListe.get(row), 2),
+								re.cellValue(dmeAusgabeListe.get(row), 3),
+								re.cellValue(dmeAusgabeListe.get(row), 4),
 								re.cellValue(dmeAusgabeListe.get(row), 5),
 								re.cellValue(dmeAusgabeListe.get(row), 6),
+								re.cellValue(dmeAusgabeListe.get(row), 7),
 								re.cellValue(dmeAusgabeListe.get(row), 8));
     }
     
     //erzeugen von Leeren reihen
     private void emptyDataBeanRow(DataBeanList dataBeanList, Integer times) {
     	for(int i = 0; i < times; i++) {
-    		dataBeanList.add("","","","");
+    		dataBeanList.add("","","","","","","","","","");
     	}
     }
     
