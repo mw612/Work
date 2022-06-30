@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -14,7 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class ReadExcelFile {
-
+		private JPanel callingPanel;
       File file;
       FileInputStream fis;
       XSSFWorkbook wb;
@@ -22,7 +23,8 @@ public class ReadExcelFile {
       DataFormatter formatter = new DataFormatter();
       FormulaEvaluator evaluator;
 
-      ReadExcelFile(String path){
+      ReadExcelFile(String path, JPanel callingPanel){
+    	  this.callingPanel = callingPanel;
         try{
           file = new File(path);
           fis = new FileInputStream(file);
@@ -38,7 +40,9 @@ public class ReadExcelFile {
     		serialNumber = serialNumber.substring(0, 13);
     	}
     	catch(StringIndexOutOfBoundsException e) {
-    		JOptionPane.showInternalMessageDialog(null, "Übergebene Seriennummer war zu kurz, oder nicht vorhanden.", "Error", JOptionPane.ERROR_MESSAGE);
+    		JOptionPane.showInternalMessageDialog(callingPanel, "Übergebene Seriennummer ist zu kurz, oder nicht vorhanden.", "Error", JOptionPane.ERROR_MESSAGE);
+    		//keine SN eingegeben
+    		return -2;
     	}
         sheet= wb.getSheetAt(0);
 

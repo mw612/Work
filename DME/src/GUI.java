@@ -19,9 +19,7 @@ public class GUI {
     //
 	// *********************************************************************************
 	private String path;
-
-    private String title;
-    private JFrame mainWindow;
+    
     private JPanel mainPanel;
     private JPanel dmeMainButtonPanel;
     private JPanel dmeButtonPanel;
@@ -155,14 +153,12 @@ public class GUI {
 	// *********************************************************************************
 
 
-    public GUI(String title, String path){
-        this.title = title;
+    public GUI(String path){
         this.path = path;
     }
 
 
     public void create(){
-        mainWindow          = new JFrame(title);
         mainPanel           = new JPanel();
         dmeContentPanel     = new JPanel();
         dmeMainButtonPanel  = new JPanel();
@@ -182,12 +178,12 @@ public class GUI {
         createGUIElements();
 
 
-        mainWindow.setContentPane(mainPanel);
+        Main.mainWindow.setContentPane(mainPanel);
     }
 
     public void loadWindow(){
-        mainWindow.pack();
-        mainWindow.setVisible(true);
+        Main.mainWindow.pack();
+        Main.mainWindow.setVisible(true);
     }
 
     private void createGUIElements(){
@@ -278,7 +274,7 @@ public class GUI {
         // ********************************
     	//  Fenster Listener
     	// ********************************
-        mainWindow.addWindowListener(new Listener_Window());
+        Main.mainWindow.addWindowListener(new Listener_Window());
 
         // ********************************
     	//  Textfeld Listener
@@ -304,7 +300,7 @@ public class GUI {
                 if(tf_scannerInput.getText() == null || tf_scannerInput.getText().length()<13 )
                     return;
                 
-                WriteExcelFile excelFile = new WriteExcelFile(path);
+                WriteExcelFile excelFile = new WriteExcelFile(path, mainPanel);
                 int rowNumber = excelFile.searchSerialNumber(tf_scannerInput.getText());
                 //Zeile 0/1 sind Überschrift + Zellen bezeichnung
                 if( rowNumber == 0 || rowNumber == 1){
@@ -345,9 +341,9 @@ public class GUI {
         bt_repair.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PrintJasper pj = new PrintJasper();
-				ReadExcelFile re = new ReadExcelFile(path);
-				WriteExcelFile we = new WriteExcelFile(path);
+				PrintJasper pj = new PrintJasper(mainPanel);
+				ReadExcelFile re = new ReadExcelFile(path, mainPanel);
+				WriteExcelFile we = new WriteExcelFile(path, mainPanel);
 				DataBeanList dbl= new DataBeanList();
 				ArrayList<Integer> rowList = re.searchRowsRepair();
 				
@@ -383,13 +379,16 @@ public class GUI {
         bt_handingover.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PrintJasper pj = new PrintJasper();
-				ReadExcelFile re = new ReadExcelFile(path);
+				PrintJasper pj = new PrintJasper(mainPanel);
+				ReadExcelFile re = new ReadExcelFile(path, mainPanel);
 				DataBeanList dbl = new DataBeanList();
 				
 				//Befüllen der globalen Variable dmeAusgabeListe mit zu druckenden Reihennummern
 				if(dmeAusgabeListe.size() == 0 || dmeAusgabeListe == null) {
-					dmeAusgabeListe.add(re.searchSerialNumber(tf_scannerInput.getText()));
+					int rowNumber = re.searchSerialNumber(tf_scannerInput.getText());
+					//Wenn SN nicht gefunden gibt re.searchSerialnumber einen Error Dialog aus und wird hier beendet
+					if(rowNumber < 0) return;
+					dmeAusgabeListe.add(rowNumber);
 				}
 				//die Reihen der dmeAusgabeListe in DataBean packen
 				for(int i=0; i<dmeAusgabeListe.size(); i++){
@@ -414,7 +413,6 @@ public class GUI {
         });
         
     }
-    
     
     // *********************************************************************************
  	//
@@ -482,7 +480,7 @@ public class GUI {
         }
 
 
-        ReadExcelFile excelFile = new ReadExcelFile(path);
+        ReadExcelFile excelFile = new ReadExcelFile(path,mainPanel);
         int rowNumber = excelFile.searchSerialNumber(tf_scannerInput.getText());
 
         if(rowNumber == -1){

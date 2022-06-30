@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -16,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class WriteExcelFile {
+	private JPanel callingPanel;
     File file;
     FileOutputStream fos;
     FileInputStream fis;
@@ -24,14 +26,15 @@ public class WriteExcelFile {
     DataFormatter formatter = new DataFormatter();
     FormulaEvaluator evaluator;
 
-    WriteExcelFile(String path){
+    WriteExcelFile(String path, JPanel callingPanel){
+    	this.callingPanel = callingPanel;
         try{
             file = new File(path);
             fis = new FileInputStream(file);
             wb = new XSSFWorkbook(fis);
         }
         catch(IOException ioEx){
-        	JOptionPane.showInternalMessageDialog(null, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showInternalMessageDialog(callingPanel, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
         	ioEx.printStackTrace();
         	System.exit(11);
         }
@@ -82,7 +85,7 @@ public class WriteExcelFile {
             fos = new FileOutputStream(file);
             wb.write(fos);
         } catch (IOException e) {
-        	JOptionPane.showInternalMessageDialog(null, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showInternalMessageDialog(callingPanel, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
         	e.printStackTrace();
         	System.exit(10);
         }
