@@ -15,7 +15,7 @@ import javax.swing.event.DocumentListener;
 public class GUI {
 	// *********************************************************************************
 	//
-	//GUI Elements
+	//  GUI Elements
     //
 	// *********************************************************************************
 	private String path;
@@ -61,6 +61,7 @@ public class GUI {
     											"BOSS 925V",
     											"S-Quad X15",
     											"S-Quad X15V",
+                                                "LGRA Expert VHF Swion D",
     											""};
 
     private JComboBox<String>   cb_location;
@@ -136,6 +137,8 @@ public class GUI {
                                                 "Team Technik Wirtz",
                                                 ""
                                             };
+    
+    private JOptionPane printOptionsPane;
 
 	// *********************************************************************************
 	//
@@ -274,11 +277,14 @@ public class GUI {
 	// *********************************************************************************
 
     public void createListener(){
-        //Programm beenden
+        // ********************************
+    	//  Fenster Listener
+    	// ********************************
         mainWindow.addWindowListener(new Listener_Window());
 
-
-        //Document Listener, Scanner input
+        // ********************************
+    	//  Textfeld Listener
+    	// ********************************
         tf_scannerInput.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -330,7 +336,10 @@ public class GUI {
                 excelFile.closeFIS();
             }
         });
-
+        
+        // ********************************
+    	//  Button Listener
+    	// ********************************
         bt_save.addActionListener(new ActionListener() {
         	
         	
@@ -421,13 +430,19 @@ public class GUI {
 				ReadExcelFile re = new ReadExcelFile(path);
 				DataBeanList dbl = new DataBeanList();
 				
+				//Befüllen der globalen Variable dmeAusgabeListe mit zu druckenden Reihennummern
 				if(dmeAusgabeListe.size() == 0 || dmeAusgabeListe == null) {
 					dmeAusgabeListe.add(re.searchSerialNumber(tf_scannerInput.getText()));
 				}
-				
+				//die Reihen der dmeAusgabeListe in DataBean packen
 				for(int i=0; i<dmeAusgabeListe.size(); i++){
 					addDataBean(re, dbl, i);
 				}
+				
+				//TODO
+				//optionale anzahl an Leerzeilen hinzufügen
+				//emptyDataBeanRow(dbl, i);
+				printOptions(dbl);
 				
 				pj.dmeUebergabeSchein(dbl);
 				dmeAusgabeListe.clear();
@@ -448,7 +463,12 @@ public class GUI {
     }
     
 
-    
+    // *********************************************************************************
+ 	//
+ 	//  Private Helpers
+    //
+ 	// *********************************************************************************
+
 
 
     private String dateFormat(String s){
@@ -470,6 +490,13 @@ public class GUI {
 								re.cellValue(dmeAusgabeListe.get(row), 8));
     }
     
+    //erzeugen von Leeren reihen
+    private void emptyDataBeanRow(DataBeanList dataBeanList, Integer times) {
+    	for(int i = 0; i < times; i++) {
+    		dataBeanList.add("","","","");
+    	}
+    }
+    
     private void focusOnScannerInput() {
     	tf_scannerInput.requestFocus();
     	tf_scannerInput.selectAll();
@@ -486,6 +513,13 @@ public class GUI {
         cb_location.setSelectedItem("");
         tf_datum.setText("");
         tf_bemerkung.setText("");
+    }
+    
+    private void printOptions(DataBeanList dataBeanList) {
+    	
+    	
+    	String rows = JOptionPane.showInternalInputDialog(mainPanel, "Sollen Leerzeilen erzeugt werden?\n\nAnzahl: ");
+    	emptyDataBeanRow(dataBeanList, Integer.parseInt(rows));
     }
     
     

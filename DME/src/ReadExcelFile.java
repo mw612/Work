@@ -3,6 +3,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -32,7 +34,12 @@ public class ReadExcelFile {
       }
 
       public int searchSerialNumber(String serialNumber){
-        serialNumber = serialNumber.substring(0, 13);
+    	try {  
+    		serialNumber = serialNumber.substring(0, 13);
+    	}
+    	catch(StringIndexOutOfBoundsException e) {
+    		JOptionPane.showMessageDialog(null, "Übergebene Seriennummer war zu kurz, oder nicht vorhanden.", "Error", JOptionPane.ERROR_MESSAGE);
+    	}
         sheet= wb.getSheetAt(0);
 
         String cellValue = "";
