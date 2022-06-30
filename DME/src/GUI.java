@@ -462,7 +462,7 @@ public class GUI {
         
     }
     
-
+    
     // *********************************************************************************
  	//
  	//  Private Helpers
@@ -525,6 +525,7 @@ public class GUI {
     	
     	
     	String rows = JOptionPane.showInternalInputDialog(mainPanel, "Sollen Leerzeilen erzeugt werden?\n\nAnzahl: ");
+    	if(rows == null) return;
     	emptyDataBeanRow(dataBeanList, Integer.parseInt(rows));
     }
     
