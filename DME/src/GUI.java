@@ -137,8 +137,6 @@ public class GUI {
                                                 "Team Technik Wirtz",
                                                 ""
                                             };
-    
-    private JOptionPane printOptionsPane;
 
 	// *********************************************************************************
 	//
@@ -287,63 +285,20 @@ public class GUI {
     	// ********************************
         tf_scannerInput.getDocument().addDocumentListener(new DocumentListener(){
             @Override
-            public void changedUpdate(DocumentEvent e) {
-                excelOutput();
-            }
+            public void changedUpdate(DocumentEvent e) { excelOutput(); }
 
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                excelOutput();
-
-            }
+            public void insertUpdate(DocumentEvent e) { excelOutput(); }
 
             @Override
-            public void removeUpdate(DocumentEvent e) {
-                excelOutput();
+            public void removeUpdate(DocumentEvent e) { excelOutput(); }
 
-            }
-
-
-            private void excelOutput(){
-                if(tf_scannerInput.getText() == null || tf_scannerInput.getText().length()<13 ){ 
-                     clearFields();
-                    return;
-                }
-
-
-                ReadExcelFile excelFile = new ReadExcelFile(path);
-                int rowNumber = excelFile.searchSerialNumber(tf_scannerInput.getText());
-
-                if(rowNumber == -1){
-                    clearFields();
-                    return;
-                }
-                
-                tf_beschaffungsdatum.setText(   excelFile.cellValue(rowNumber, 0));
-                tf_beschaffer.setText(          excelFile.cellValue(rowNumber, 1));
-                tf_preis.setText(               excelFile.cellValue(rowNumber, 2));
-                cb_melderTyp.setSelectedItem(   excelFile.cellValue(rowNumber, 3));
-                tf_barcode.setText(             excelFile.cellValue(rowNumber, 4));
-                tf_seriennummer.setText(        excelFile.cellValue(rowNumber, 5));
-                cb_location.setSelectedItem(    excelFile.cellValue(rowNumber, 6));
-                tf_datum.setText(               dateFormat(excelFile.cellValue(rowNumber, 7)));
-                tf_bemerkung.setText(           excelFile.cellValue(rowNumber, 8));
-                
-                //Zwischenspeichern der Location -> Änderungen zur DME Ausgabe
-                dmeLocationPuffer = excelFile.cellValue(rowNumber, 6);
-
-                
-                excelFile.closeFIS();
-            }
         });
         
         // ********************************
     	//  Button Listener
     	// ********************************
         bt_save.addActionListener(new ActionListener() {
-        	
-        	
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(tf_scannerInput.getText() == null || tf_scannerInput.getText().length()<13 )
@@ -360,6 +315,10 @@ public class GUI {
                 //Prüfen ob SN Feld ausreichend gefüllt, sonst aus Scanner input ziehen
                 if(tf_seriennummer.getText().length()!=13) tf_seriennummer.setText(tf_scannerInput.getText().substring(0, 13));
                 
+                /*
+                 * Wenn die Location geändert wurde nachdem die Reihe in die Textfelder geladen wurde
+                 * und dann auf Speichern gedrückt wird, wird die Reihe zur dmeAusgabeListe hinzugefügt
+                 */
                 if(dmeLocationPuffer != cb_location.getSelectedItem().toString()){
                 	dmeAusgabeListe.add(rowNumber);
                 }
@@ -384,7 +343,6 @@ public class GUI {
         });
         
         bt_repair.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PrintJasper pj = new PrintJasper();
@@ -392,7 +350,6 @@ public class GUI {
 				WriteExcelFile we = new WriteExcelFile(path);
 				DataBeanList dbl= new DataBeanList();
 				ArrayList<Integer> rowList = re.searchRowsRepair();
-				
 				
 				if(rowList == null) {
 					System.out.println("Keine Melder im Status Reparatur - Ausgang");
@@ -417,13 +374,13 @@ public class GUI {
 				re.closeFIS();
 				we.closeFISFOS();
 				
+				excelOutput();
 				focusOnScannerInput();
 			}
         	
         });
         
         bt_handingover.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PrintJasper pj = new PrintJasper();
@@ -439,9 +396,7 @@ public class GUI {
 					addDataBean(re, dbl, i);
 				}
 				
-				//TODO
-				//optionale anzahl an Leerzeilen hinzufügen
-				//emptyDataBeanRow(dbl, i);
+
 				printOptions(dbl);
 				
 				pj.dmeUebergabeSchein(dbl);
@@ -456,8 +411,6 @@ public class GUI {
 				
 				focusOnScannerInput();
 			}
-        	
-			
         });
         
     }
@@ -521,16 +474,45 @@ public class GUI {
         tf_bemerkung.setText("");
     }
     
+    //Befüllt die Textfelder aus der ExcelListe
+    private void excelOutput(){
+        if(tf_scannerInput.getText() == null || tf_scannerInput.getText().length()<13 ){ 
+             clearFields();
+            return;
+        }
+
+
+        ReadExcelFile excelFile = new ReadExcelFile(path);
+        int rowNumber = excelFile.searchSerialNumber(tf_scannerInput.getText());
+
+        if(rowNumber == -1){
+            clearFields();
+            return;
+        }
+        
+        tf_beschaffungsdatum.setText(   excelFile.cellValue(rowNumber, 0));
+        tf_beschaffer.setText(          excelFile.cellValue(rowNumber, 1));
+        tf_preis.setText(               excelFile.cellValue(rowNumber, 2));
+        cb_melderTyp.setSelectedItem(   excelFile.cellValue(rowNumber, 3));
+        tf_barcode.setText(             excelFile.cellValue(rowNumber, 4));
+        tf_seriennummer.setText(        excelFile.cellValue(rowNumber, 5));
+        cb_location.setSelectedItem(    excelFile.cellValue(rowNumber, 6));
+        tf_datum.setText(               dateFormat(excelFile.cellValue(rowNumber, 7)));
+        tf_bemerkung.setText(           excelFile.cellValue(rowNumber, 8));
+        
+        //Zwischenspeichern der Location -> Änderungen zur DME Ausgabe
+        dmeLocationPuffer = excelFile.cellValue(rowNumber, 6);
+
+        excelFile.closeFIS();
+    }
+    
     private void printOptions(DataBeanList dataBeanList) {
     	
-    	
+    	//Erzeugt Dialog, mit Frage nach Leerzeilen, fängt Abbrechen bzw null Zeilen ab
     	String rows = JOptionPane.showInternalInputDialog(mainPanel, "Sollen Leerzeilen erzeugt werden?\n\nAnzahl: ");
     	if(rows == null) return;
     	emptyDataBeanRow(dataBeanList, Integer.parseInt(rows));
     }
-    
-    
-    
 }
 
 

@@ -38,7 +38,7 @@ public class ReadExcelFile {
     		serialNumber = serialNumber.substring(0, 13);
     	}
     	catch(StringIndexOutOfBoundsException e) {
-    		JOptionPane.showMessageDialog(null, "Übergebene Seriennummer war zu kurz, oder nicht vorhanden.", "Error", JOptionPane.ERROR_MESSAGE);
+    		JOptionPane.showInternalMessageDialog(null, "Übergebene Seriennummer war zu kurz, oder nicht vorhanden.", "Error", JOptionPane.ERROR_MESSAGE);
     	}
         sheet= wb.getSheetAt(0);
 

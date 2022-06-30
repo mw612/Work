@@ -31,7 +31,7 @@ public class WriteExcelFile {
             wb = new XSSFWorkbook(fis);
         }
         catch(IOException ioEx){
-        	JOptionPane.showMessageDialog(null, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showInternalMessageDialog(null, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
         	ioEx.printStackTrace();
         	System.exit(11);
         }
@@ -82,7 +82,7 @@ public class WriteExcelFile {
             fos = new FileOutputStream(file);
             wb.write(fos);
         } catch (IOException e) {
-        	JOptionPane.showMessageDialog(null, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
+        	JOptionPane.showInternalMessageDialog(null, "Excel-Datei konnte nicht geöffent werden!\nBitte schließen und erneut ausführen.\n\nDas Programm wird nach dem Bestätigen beendet.", "Error", JOptionPane.ERROR_MESSAGE);
         	e.printStackTrace();
         	System.exit(10);
         }
