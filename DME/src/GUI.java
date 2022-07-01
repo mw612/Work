@@ -364,10 +364,7 @@ public class GUI {
 				}
 				
 				//Fügt die Listen Elemente dem zu Druckenden DataBeanList-Objekt an
-				if(customRowList != null) {
-					dbl.add(customRowList);
-					customRowList.getDataBeanArrayList().clear();
-				}
+				if(customRowList != null) dbl.add(customRowList);
 				
 				printOptions(dbl);
 				
@@ -386,6 +383,15 @@ public class GUI {
 					desk.open(new File(pj.getPdfExportReparatur()));
 				} catch (IOException e1) {
 					e1.printStackTrace();
+				}
+				
+							
+				//Nachdem die Lsite Gedruckt wurde, werden die custom Rows gelöscht 
+				//und bei den Reparaturaufträgen in Bearbeitung reingeschrieben:
+				if(customRowList != null ) customRowList.getDataBeanArrayList().clear();
+				for(int i = 0; i< rowList.size(); i++) {
+					//Schreibt in die Exceltabelle den Status Reparatur - In Bearbeitung
+					we.writeCell(rowList.get(i), 6, "Reparatur - in Bearbeitung");
 				}
 				
 				re.closeFIS();
