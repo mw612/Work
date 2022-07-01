@@ -320,6 +320,10 @@ public class GUI {
                  * und dann auf Speichern gedrückt wird, wird die Reihe zur dmeAusgabeListe hinzugefügt
                  */
                 if(dmeLocationPuffer != cb_location.getSelectedItem().toString()){
+                	//Wenn die Reihennummer(=Seriennummer) schon in der Liste ist, alten Wert löschen und neuen Wert einfügen. 
+                	for(int i = 0; i<dmeAusgabeListe.size(); i++)
+                		if(dmeAusgabeListe.get(i) == rowNumber) dmeAusgabeListe.remove(i);
+                	
                 	dmeAusgabeListe.add(rowNumber);
                 }
                 
