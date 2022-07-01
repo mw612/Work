@@ -29,6 +29,7 @@ public class GUI {
     private JButton     bt_save;
     private JButton 	bt_repair;
     private JButton     bt_handingover;
+    private JButton		bt_customRow;
 
     private JLabel      lb_scanner;
     private JLabel      lb_beschaffungsdatum;
@@ -146,6 +147,8 @@ public class GUI {
     private ArrayList<Integer> dmeAusgabeListe = new ArrayList<Integer>();
     private String dmeLocationPuffer;
     
+    private DataBeanList customRowList =new DataBeanList();
+    
 	// *********************************************************************************
 	//
 	//	Methods
@@ -189,20 +192,21 @@ public class GUI {
     private void createGUIElements(){
 
 
-        bt_save                	= new JButton(   "Speichern");
-        bt_repair				= new JButton(   "Reparatur");
-        bt_handingover         	= new JButton(   "DME Ausgeben");
+        bt_save                	= new JButton(  "Speichern");
+        bt_repair				= new JButton(  "Reparatur");
+        bt_handingover         	= new JButton(  "DME Ausgeben");
+        bt_customRow			= new JButton(	"Reihe +");	
 
-        lb_scanner             	= new JLabel(    "Scanner Input:");
-        lb_beschaffungsdatum   	= new JLabel(    "Beschaffungsdatum:");
-        lb_beschaffer          	= new JLabel(    "Beschaffer:");
-        lb_preis               	= new JLabel(    "Preis:");
-        lb_melderTyp           	= new JLabel(    "MelderTyp:");
-        lb_barcode             	= new JLabel(    "Barcode:");
-        lb_seriennummer        	= new JLabel(    "Seriennummer:");
-        lb_datum               	= new JLabel(    "Datum:");
-        lb_bemerkung           	= new JLabel(    "Bemerkung:");
-        lb_location            	= new JLabel(    "Standort:");
+        lb_scanner             	= new JLabel(   "Scanner Input:");
+        lb_beschaffungsdatum   	= new JLabel(   "Beschaffungsdatum:");
+        lb_beschaffer          	= new JLabel(   "Beschaffer:");
+        lb_preis               	= new JLabel(   "Preis:");
+        lb_melderTyp           	= new JLabel(   "MelderTyp:");
+        lb_barcode             	= new JLabel(   "Barcode:");
+        lb_seriennummer        	= new JLabel(   "Seriennummer:");
+        lb_datum               	= new JLabel(   "Datum:");
+        lb_bemerkung           	= new JLabel(   "Bemerkung:");
+        lb_location            	= new JLabel(   "Standort:");
 
         tf_scannerInput        	= new JTextField(15);
         tf_beschaffungsdatum   	= new JTextField(15);
@@ -250,6 +254,7 @@ public class GUI {
         
         dmeButtonPanel.add(bt_repair);
         dmeButtonPanel.add(bt_handingover);
+        dmeButtonPanel.add(bt_customRow);
         
         
         
@@ -387,14 +392,19 @@ public class GUI {
 				if(dmeAusgabeListe.size() == 0 || dmeAusgabeListe == null) {
 					int rowNumber = re.searchSerialNumber(tf_scannerInput.getText());
 					//Wenn SN nicht gefunden gibt re.searchSerialnumber einen Error Dialog aus und wird hier beendet
-					if(rowNumber < 0) return;
-					dmeAusgabeListe.add(rowNumber);
+					if(rowNumber > 0) {
+						dmeAusgabeListe.add(rowNumber);
+					}
 				}
 				//die Reihen der dmeAusgabeListe in DataBean packen
-				for(int i=0; i<dmeAusgabeListe.size(); i++){
-					addDataBean(re, dbl, i);
+				if(dmeAusgabeListe != null) {
+					for(int i=0; i<dmeAusgabeListe.size(); i++){
+						addDataBean(re, dbl, i);
+					}
 				}
 				
+				if(customRowList != null) 
+					dbl.add(customRowList);
 
 				printOptions(dbl);
 				
@@ -411,6 +421,17 @@ public class GUI {
 				focusOnScannerInput();
 			}
         });
+        
+        bt_customRow.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CustomRows customRowDialog = new CustomRows(mainPanel, customRowList);
+				customRowDialog.displayGUI();
+			}
+        	
+        });
+        
+     
         
     }
     
@@ -505,10 +526,12 @@ public class GUI {
     }
     
     private void printOptions(DataBeanList dataBeanList) {
+    	//TODO
+    	//Erzeuge Abfrage mit Custom Reihen, ggf als Extra Button auslagern.
     	
     	//Erzeugt Dialog, mit Frage nach Leerzeilen, fängt Abbrechen bzw null Zeilen ab
     	String rows = JOptionPane.showInternalInputDialog(mainPanel, "Sollen Leerzeilen erzeugt werden?\n\nAnzahl: ");
-    	if(rows == null) return;
+    	if(rows == null || rows.equals("")) return;
     	emptyDataBeanRow(dataBeanList, Integer.parseInt(rows));
     }
 }

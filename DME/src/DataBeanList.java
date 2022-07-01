@@ -54,8 +54,21 @@ public class DataBeanList {
 						);
 	}
 	
+	public ArrayList<DataBean> add(DataBeanList dbl) {
+		ArrayList<DataBean> adbl = dbl.getDataBeanArrayList();
+		if(adbl == null) return null;
+		for(int i = 0; i< adbl.size(); i++) {
+			dataBeanList.add(adbl.get(i));
+		}
+		return dataBeanList;
+	}
+	
 	public ArrayList<DataBean> getDataBeanArrayList() {
 		return dataBeanList;
+	}
+	
+	public void sort() {
+		
 	}
 	
 	
