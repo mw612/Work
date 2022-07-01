@@ -41,6 +41,8 @@ public class DataBeanList {
 						String Datum, 
 						String Bemerkung) {
 		
+
+		
 		dataBeanList.add( produce(	Anzahl,
 									BeschaffungsDatum,
 									Beschaffer, 
@@ -57,8 +59,14 @@ public class DataBeanList {
 	
 	//Funktion add mit DataBeanListObjekt überladen
 	public ArrayList<DataBean> add(DataBeanList dbl) {
+		/*  Die Übergebene DataBeanList wird an eine ArrayList übergeben, 
+		 *  geprüft ob diese null ist
+		 *  Die ArrayList der Klasse wird befüllt, und zurückgegeben.
+		 */
 		ArrayList<DataBean> adbl = dbl.getDataBeanArrayList();
+		
 		if(adbl == null) return null;
+		
 		for(int i = 0; i< adbl.size(); i++) {
 			dataBeanList.add(adbl.get(i));
 		}
@@ -67,6 +75,11 @@ public class DataBeanList {
 	
 	public ArrayList<DataBean> getDataBeanArrayList() {
 		return dataBeanList;
+	}
+	
+	public int size() {
+		int size = dataBeanList.size();
+		return size;
 	}
 	
 	public void sort() {

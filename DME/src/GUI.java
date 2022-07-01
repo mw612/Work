@@ -350,12 +350,7 @@ public class GUI {
 				WriteExcelFile we = new WriteExcelFile(path, mainPanel);
 				DataBeanList dbl= new DataBeanList();
 				ArrayList<Integer> rowList = re.searchRowsRepair();
-				
-				if(rowList == null) {
-					System.out.println("Keine Melder im Status Reparatur - Ausgang");
-					return;
-				}
-				
+							
 				//Sucht die ZellenWerte der zur Reparatur gehenden Melder raus
 				//und leitet sie an JasperReports weiter.
 				for(int i = 0; i< rowList.size(); i++) {
@@ -363,6 +358,24 @@ public class GUI {
 					//Schreibt in die Exceltabelle den Status Reparatur - In Bearbeitung
 					we.writeCell(rowList.get(i), 6, "Reparatur - in Bearbeitung");
 				}
+				
+				//Fügt die Listen Elemente dem zu Druckenden DataBeanList-Objekt an
+				if(customRowList != null) {
+					dbl.add(customRowList);
+					customRowList.getDataBeanArrayList().clear();
+				}
+				
+				printOptions(dbl);
+				
+				if(dbl.size() < 1) {
+					JOptionPane.showInternalMessageDialog(mainPanel, 	"Kein Datensatz zum Drucken vorhanden."
+																		+ "\n\n- Kein Location wechsel stattgefunden"
+																		+ "\n- Keine Benutzerdefinierten Reihen erstellt"
+																		+ "\n- Keine leeren Spalten erstellt"
+																		, "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
 				pj.printReparaturSchein(dbl);
 				Desktop desk = Desktop.getDesktop();
 				try {
@@ -388,7 +401,9 @@ public class GUI {
 				DataBeanList dbl = new DataBeanList();
 				
 				//Befüllen der globalen Variable dmeAusgabeListe mit zu druckenden Reihennummern
-				if(dmeAusgabeListe.size() == 0 || dmeAusgabeListe == null) {
+				// falls dme Liste null oder leer, anlegen und mit aktueller Auswahl füllen.
+				if(dmeAusgabeListe == null) { dmeAusgabeListe = new ArrayList<Integer>(); }
+				if(dmeAusgabeListe.size() == 0) {
 					int rowNumber = re.searchSerialNumber(tf_scannerInput.getText());
 					//Wenn SN nicht gefunden gibt re.searchSerialnumber einen Error Dialog aus und wird hier beendet
 					if(rowNumber > 0) {
@@ -396,19 +411,30 @@ public class GUI {
 					}
 				}
 				//die Reihen der dmeAusgabeListe in DataBean packen
-				if(dmeAusgabeListe != null) {
+				if(dmeAusgabeListe != null && dmeAusgabeListe.size() > 0) {
 					for(int i=0; i<dmeAusgabeListe.size(); i++){
 						addDataBean(re, dbl, i);
 					}
 				}
 				
 				//Fügt die Listen Elemente dem zu Druckenden DataBeanList-Objekt an
-				if(customRowList != null) 
+				if(customRowList != null) {
 					dbl.add(customRowList);
-
+					customRowList.getDataBeanArrayList().clear();
+				}
+				
 				printOptions(dbl);
 				
-				pj.dmeUebergabeSchein(dbl);
+				if(dbl.size() < 1) {
+					JOptionPane.showInternalMessageDialog(mainPanel, 	"Kein Datensatz zum Drucken vorhanden."
+																		+ "\n\n- Kein Location wechsel stattgefunden"
+																		+ "\n- Keine Benutzerdefinierten Reihen erstellt"
+																		+ "\n- Keine leeren Spalten erstellt"
+																		, "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				pj.printDmeUebergabeSchein(dbl);
 				dmeAusgabeListe.clear();
 				
 				Desktop desk = Desktop.getDesktop();
