@@ -49,7 +49,16 @@ public class CustomRows {
 	}
 	
 	public void addDataBean(){
-		dbl.add(tf_Anzahl.getText(), "", "", "", tf_Gerät.getText(), "", tf_Seriennummer.getText(), null, null, tf_Bemerkung.getText());
+		//Anzahl: Buchstaben löschen und x am Ende hinzufügen.
+		String anz = tf_Anzahl.getText();
+		StringBuilder sb = new StringBuilder(anz);
+		for(int i = anz.length()-1; i >= 0; i--) 
+			if(!Character.isDigit(anz.charAt(i))) 
+				sb.deleteCharAt(i);
+		sb.append("x");
+		anz= sb.toString();
+		
+		dbl.add(anz, "", "", "", tf_Gerät.getText(), "", tf_Seriennummer.getText(), null, null, tf_Bemerkung.getText());
 	}
 	
 }
