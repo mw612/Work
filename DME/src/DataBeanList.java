@@ -29,6 +29,7 @@ public class DataBeanList {
 		return dataBean;
 	}
 	
+	//Hinzufügen von DataBeanObjekten zur Liste über Strings
 	public void add(	String Anzahl,
 						String BeschaffungsDatum,
 						String Beschaffer,
@@ -54,6 +55,7 @@ public class DataBeanList {
 						);
 	}
 	
+	//Funktion add mit DataBeanListObjekt überladen
 	public ArrayList<DataBean> add(DataBeanList dbl) {
 		ArrayList<DataBean> adbl = dbl.getDataBeanArrayList();
 		if(adbl == null) return null;
@@ -68,7 +70,6 @@ public class DataBeanList {
 	}
 	
 	public void sort() {
-		
 	}
 	
 	

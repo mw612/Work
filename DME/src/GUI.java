@@ -60,7 +60,6 @@ public class GUI {
     											"BOSS 925V",
     											"S-Quad X15",
     											"S-Quad X15V",
-                                                "LGRA Expert VHF Swion D",
     											""};
 
     private JComboBox<String>   cb_location;
@@ -403,6 +402,7 @@ public class GUI {
 					}
 				}
 				
+				//Fügt die Listen Elemente dem zu Druckenden DataBeanList-Objekt an
 				if(customRowList != null) 
 					dbl.add(customRowList);
 
@@ -526,9 +526,6 @@ public class GUI {
     }
     
     private void printOptions(DataBeanList dataBeanList) {
-    	//TODO
-    	//Erzeuge Abfrage mit Custom Reihen, ggf als Extra Button auslagern.
-    	
     	//Erzeugt Dialog, mit Frage nach Leerzeilen, fängt Abbrechen bzw null Zeilen ab
     	String rows = JOptionPane.showInternalInputDialog(mainPanel, "Sollen Leerzeilen erzeugt werden?\n\nAnzahl: ");
     	if(rows == null || rows.equals("")) return;
