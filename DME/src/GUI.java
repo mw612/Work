@@ -357,17 +357,15 @@ public class GUI {
 							
 				//Sucht die ZellenWerte der zur Reparatur gehenden Melder raus
 				//und leitet sie an JasperReports weiter.
-				for(int i = 0; i< rowList.size(); i++) {
-					addDataBean(re, dbl, i);
-					//Schreibt in die Exceltabelle den Status Reparatur - In Bearbeitung
-					we.writeCell(rowList.get(i), 6, "Reparatur - in Bearbeitung");
+				for(int i = 0; i < rowList.size(); i++) {
+					addDataBean(re, dbl, rowList.get(i));
 				}
-				
 				//Fügt die Listen Elemente dem zu Druckenden DataBeanList-Objekt an
-				if(customRowList != null) dbl.add(customRowList);
-				
+				if(customRowList != null) {
+					dbl.add(customRowList);
+					customRowList.getDataBeanArrayList().clear();
+				}
 				printOptions(dbl);
-				
 				if(dbl.size() < 1) {
 					JOptionPane.showInternalMessageDialog(mainPanel, 	"Kein Datensatz zum Drucken vorhanden."
 																		+ "\n\n- Kein Location wechsel stattgefunden"
@@ -376,7 +374,6 @@ public class GUI {
 																		, "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				
 				pj.printReparaturSchein(dbl);
 				Desktop desk = Desktop.getDesktop();
 				try {
@@ -423,7 +420,7 @@ public class GUI {
 				//die Reihen der dmeAusgabeListe in DataBean packen
 				if(dmeAusgabeListe != null && dmeAusgabeListe.size() > 0) {
 					for(int i=0; i<dmeAusgabeListe.size(); i++){
-						addDataBean(re, dbl, i);
+						addDataBean(re, dbl, dmeAusgabeListe.get(i));
 					}
 				}
 				
@@ -491,17 +488,17 @@ public class GUI {
         return parts[1] + "." + parts[0] + "." + parts[2];
     }
     
-    private void addDataBean(ReadExcelFile re, DataBeanList dataBeanList, Integer row ) {
+    private void addDataBean(ReadExcelFile re, DataBeanList dataBeanList, Integer rowNumber ) {
 			dataBeanList.add(	"1x",
-								re.cellValue(dmeAusgabeListe.get(row), 0),
-								re.cellValue(dmeAusgabeListe.get(row), 1),
-								re.cellValue(dmeAusgabeListe.get(row), 2),
-								re.cellValue(dmeAusgabeListe.get(row), 3),
-								re.cellValue(dmeAusgabeListe.get(row), 4),
-								re.cellValue(dmeAusgabeListe.get(row), 5),
-								re.cellValue(dmeAusgabeListe.get(row), 6),
-								re.cellValue(dmeAusgabeListe.get(row), 7),
-								re.cellValue(dmeAusgabeListe.get(row), 8));
+								re.cellValue(rowNumber, 0),
+								re.cellValue(rowNumber, 1),
+								re.cellValue(rowNumber, 2),
+								re.cellValue(rowNumber, 3),
+								re.cellValue(rowNumber, 4),
+								re.cellValue(rowNumber, 5),
+								re.cellValue(rowNumber, 6),
+								re.cellValue(rowNumber, 7),
+								re.cellValue(rowNumber, 8));
     }
     
     //erzeugen von Leeren reihen
