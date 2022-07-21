@@ -6,6 +6,17 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/ApacheCommons/commons-beanutils-1.9.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/ApacheCommons/commons-digester-2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/ApacheCommons/commons-io-2.11.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/ApacheCommons/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/ApacheCommons/itext-2.1.7.js9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/poi-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/poi-ooxml-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/poi-ooxml-schemas-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/xmlbeans-2.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Fonts/vincofw-jasperfont-arial-3.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/JasperReports/castor-core-1.4.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/JasperReports/castor-xml-1.4.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/JasperReports/commons-beanutils-1.9.4.jar"/>
@@ -24,12 +35,5 @@
 	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/JasperReports/spring-core-5.3.18.jar"/>
 	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/JasperReports/spring-expression-5.3.18.jar"/>
 	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/JasperReports/xmpcore-6.1.11.jar"/>
-	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/commons-collections4-4.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/poi-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/poi-ooxml-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/poi-ooxml-schemas-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Excel/xmlbeans-2.6.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/Fonts/vincofw-jasperfont-arial-3.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/admin-wirtz/Documents/Coding/JavaLibrary/ApacheCommons/commons-io-2.11.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
