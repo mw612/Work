@@ -25,6 +25,7 @@ public class GUI {
     private JPanel dmeButtonPanel;
     private JPanel dmeContentPanel;
     private JPanel dmeContainerPanel;
+    private JPanel dmeAusgabeListePanel;
 
     private JButton     bt_save;
     private JButton 	bt_repair;
@@ -41,6 +42,7 @@ public class GUI {
     private JLabel      lb_datum;
     private JLabel      lb_bemerkung;
     private JLabel      lb_location;
+    private JLabel		lb_dmeAusgabeListe;
 
     private JTextField  tf_scannerInput;
     private JTextField  tf_beschaffungsdatum;
@@ -51,6 +53,9 @@ public class GUI {
     private JTextField  tf_seriennummer;
     private JTextField  tf_datum;
     private JTextField  tf_bemerkung;
+    
+    private JList<String>		li_dmeAusgabeListe;
+    private JScrollPane sp_dmeListScroller;
 
     private JComboBox<String>   cb_melderTyp;
     private String cb_melderTyp_content[] = {	"BOSS 910", 
@@ -146,6 +151,8 @@ public class GUI {
     private ArrayList<Integer> dmeAusgabeListe = new ArrayList<Integer>();
     private String dmeLocationPuffer;
     
+    private DefaultListModel<String> dmeAusgabeListeModel = new DefaultListModel<String>();
+    
     private DataBeanList customRowList =new DataBeanList();
     
 	// *********************************************************************************
@@ -166,15 +173,17 @@ public class GUI {
         dmeMainButtonPanel  = new JPanel();
         dmeButtonPanel      = new JPanel();
         dmeContainerPanel   = new JPanel();
-
+        dmeAusgabeListePanel= new JPanel();
+        
         mainPanel.setLayout(        new FlowLayout());
         dmeContentPanel.setLayout(  new GridLayout(0,2));
         dmeMainButtonPanel.setLayout(   new BorderLayout());
         dmeButtonPanel.setLayout(   new GridLayout(0,3));
         dmeContainerPanel.setLayout(new BorderLayout());
+        dmeAusgabeListePanel.setLayout(new BorderLayout());
 
 
-
+        
         mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
 
         createGUIElements();
@@ -206,6 +215,7 @@ public class GUI {
         lb_datum               	= new JLabel(   "Datum:");
         lb_bemerkung           	= new JLabel(   "Bemerkung:");
         lb_location            	= new JLabel(   "Standort:");
+        lb_dmeAusgabeListe		= new JLabel(	"DME Ausgabe Liste");	
 
         tf_scannerInput        	= new JTextField(15);
         tf_beschaffungsdatum   	= new JTextField(15);
@@ -216,6 +226,12 @@ public class GUI {
         tf_seriennummer        	= new JTextField(15);
         tf_datum               	= new JTextField(15);
         tf_bemerkung           	= new JTextField(15);
+        
+        li_dmeAusgabeListe 		= new JList<String>();
+        li_dmeAusgabeListe.setLayoutOrientation(JList.VERTICAL);
+        sp_dmeListScroller = new JScrollPane(li_dmeAusgabeListe);
+        sp_dmeListScroller.setPreferredSize(new Dimension(250, 350));
+
 
 
         cb_melderTyp           	= new JComboBox<String>(cb_melderTyp_content);
@@ -260,9 +276,12 @@ public class GUI {
         dmeContainerPanel.add(dmeContentPanel,      BorderLayout.NORTH);
         dmeContainerPanel.add(dmeMainButtonPanel,   BorderLayout.CENTER);
         dmeContainerPanel.add(dmeButtonPanel,       BorderLayout.SOUTH);
-
-
+        
+        dmeAusgabeListePanel.add(lb_dmeAusgabeListe, BorderLayout.NORTH);
+        dmeAusgabeListePanel.add(sp_dmeListScroller, BorderLayout.CENTER);
+        
         mainPanel.add(dmeContainerPanel);
+        mainPanel.add(dmeAusgabeListePanel);
 
 
     }
@@ -319,12 +338,17 @@ public class GUI {
                  * Wenn die Location geändert wurde nachdem die Reihe in die Textfelder geladen wurde
                  * und dann auf Speichern gedrückt wird, wird die Reihe zur dmeAusgabeListe hinzugefügt
                  */
-                if(dmeLocationPuffer != cb_location.getSelectedItem().toString()){
+                if(!dmeLocationPuffer.equals(cb_location.getSelectedItem().toString())){
                 	//Wenn die Reihennummer(=Seriennummer) schon in der Liste ist, alten Wert löschen und neuen Wert einfügen. 
                 	for(int i = 0; i<dmeAusgabeListe.size(); i++)
                 		if(dmeAusgabeListe.get(i) == rowNumber) dmeAusgabeListe.remove(i);
                 	
                 	dmeAusgabeListe.add(rowNumber);
+                	
+                	//Fügt den AusgabeOrt in die DME AusgabeListe ein
+                	dmeAusgabeListeModel.addElement(cb_location.getSelectedItem().toString());
+                	li_dmeAusgabeListe.setModel(dmeAusgabeListeModel);
+                	li_dmeAusgabeListe.updateUI();
                 }
                 
                 
@@ -383,7 +407,7 @@ public class GUI {
 				}
 				
 							
-				//Nachdem die Lsite Gedruckt wurde, werden die custom Rows gelöscht 
+				//Nachdem die Liste Gedruckt wurde, werden die custom Rows gelöscht 
 				//und bei den Reparaturaufträgen in Bearbeitung reingeschrieben:
 				if(customRowList != null ) customRowList.getDataBeanArrayList().clear();
 				for(int i = 0; i< rowList.size(); i++) {
@@ -443,6 +467,11 @@ public class GUI {
 				
 				pj.printDmeUebergabeSchein(dbl);
 				dmeAusgabeListe.clear();
+				
+				//Wenn der Button Gedrückt wurde, wird die li_dmeAusgabeListe geleert. Dazu das ListModel leeren und UI updaten
+				dmeAusgabeListeModel.clear();
+				li_dmeAusgabeListe.updateUI();
+				
 				
 				Desktop desk = Desktop.getDesktop();
 				try {
@@ -554,6 +583,7 @@ public class GUI {
         
         //Zwischenspeichern der Location -> Änderungen zur DME Ausgabe
         dmeLocationPuffer = excelFile.cellValue(rowNumber, 6);
+
 
         excelFile.closeFIS();
     }
