@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -67,8 +68,9 @@ public class GUI {
     											"S-Quad X15V",
     											""};
 
-    private JComboBox<String>   cb_location;
-    private String cb_location_content[] =  {   "Lager",
+    //ComboBoxenInhalt wird anderen Klassen des Projektes zur Verfügung gestellt.
+    protected static JComboBox<String>   cb_location;
+    protected static String cb_location_content[] =  {   "Lager",
     											"Reparatur - Ausgang",
     											"Reparatur - in Bearbeitung",
                                                 "DN RTW 20",
@@ -151,9 +153,9 @@ public class GUI {
     private ArrayList<Integer> dmeAusgabeListe = new ArrayList<Integer>();
     private String dmeLocationPuffer;
     
-    private DefaultListModel<String> dmeAusgabeListeModel = new DefaultListModel<String>();
+    private DefaultListModel<String> dmeAusgabeListModel = new DefaultListModel<String>();
     
-    private DataBeanList customRowList =new DataBeanList();
+    private DataBeanList customRowList = new DataBeanList();
     
 	// *********************************************************************************
 	//
@@ -230,9 +232,7 @@ public class GUI {
         li_dmeAusgabeListe 		= new JList<String>();
         li_dmeAusgabeListe.setLayoutOrientation(JList.VERTICAL);
         sp_dmeListScroller = new JScrollPane(li_dmeAusgabeListe);
-        sp_dmeListScroller.setPreferredSize(new Dimension(250, 350));
-
-
+        sp_dmeListScroller.setPreferredSize(new Dimension(450, 350));
 
         cb_melderTyp           	= new JComboBox<String>(cb_melderTyp_content);
         cb_location            	= new JComboBox<String>(cb_location_content);
@@ -344,11 +344,24 @@ public class GUI {
                 		if(dmeAusgabeListe.get(i) == rowNumber) dmeAusgabeListe.remove(i);
                 	
                 	dmeAusgabeListe.add(rowNumber);
+                	//Nach einfügen der rowNumber in die AusgabeListe den Location Puffer auf Aktuellen Wert setzen, da sonst eine Änderung auf den Ursprünglichen Wert nicht mehr erkannt wird.
+                	dmeLocationPuffer = cb_location.getSelectedItem().toString();
                 	
-                	//Fügt den AusgabeOrt in die DME AusgabeListe ein
-                	dmeAusgabeListeModel.addElement(cb_location.getSelectedItem().toString());
-                	li_dmeAusgabeListe.setModel(dmeAusgabeListeModel);
-                	li_dmeAusgabeListe.updateUI();
+                	/*
+                	 * Die dmeAusgabeModelList wird ebenso befüllt, wie die DME Ausgabeliste und dient als deren Visualisierer.
+                	 * Neben der rowNumber, wird auch der Location Name und Seriennummer zur Identifizierung geschrieben.
+                	 * Über die RowNumber wird Identifiziert, welches Element bspw. bei einem Rechtsklick wieder gelöscht werden soll.
+                	 */
+                	//Zuerst prüfen ob das Element bereits enthalten ist, falls dann löschen.
+                	String[] elementDuplicationCheck;
+                	Boolean dmeElementIsIncluded = false;
+                	for(int i = 0; i < dmeAusgabeListModel.getSize(); i++) {
+                		elementDuplicationCheck = dmeAusgabeListModel.get(i).toString().split("[#]"); //Index 1 ist die RowNumber
+                		if(Integer.valueOf(elementDuplicationCheck[1]) == rowNumber) {
+                			dmeAusgabeListModel.remove(i);
+                		}	
+                	}
+                	addDmeAusgabeListModel(cb_location.getSelectedItem().toString() + " - "+ cb_melderTyp.getSelectedItem().toString() + " - "+ tf_seriennummer.getText() + " - #" +rowNumber);
                 }
                 
                 
@@ -469,7 +482,7 @@ public class GUI {
 				dmeAusgabeListe.clear();
 				
 				//Wenn der Button Gedrückt wurde, wird die li_dmeAusgabeListe geleert. Dazu das ListModel leeren und UI updaten
-				dmeAusgabeListeModel.clear();
+				dmeAusgabeListModel.clear();
 				li_dmeAusgabeListe.updateUI();
 				
 				
@@ -489,19 +502,29 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				CustomRows customRowDialog = new CustomRows(mainPanel, customRowList);
 				customRowDialog.displayGUI();
-			}
-        	
+				
+				
+				//Letztes (das neue) Element der CustomRow List in dmeAusgabeListModel packen und UI Updaten
+				DataBean fill = customRowList.get(customRowList.size()-1);
+				addDmeAusgabeListModel(fill.getLocation() + " - " + fill.getMelderTyp() + " - " + fill.getSeriennummer());
+			}        	
         });
         
      
         
     }
+    // *********************************************************************************
+  	//
+  	//  Public Helpers
+     //
+  	// *********************************************************************************
+   
     
     // *********************************************************************************
- 	//
- 	//  Private Helpers
-    //
- 	// *********************************************************************************
+  	//
+  	//  Private Helpers
+     //
+  	// *********************************************************************************
 
 
 
@@ -594,8 +617,23 @@ public class GUI {
     	if(rows == null || rows.equals("")) return;
     	emptyDataBeanRow(dataBeanList, Integer.parseInt(rows));
     }
+    
+    private void addDmeAusgabeListModel(String String) {
+    	dmeAusgabeListModel.addElement(String);
+    	sortDmeAusgabeListModel();
+    	li_dmeAusgabeListe.setModel(dmeAusgabeListModel);
+    	li_dmeAusgabeListe.updateUI();
+    }
+    
+    private void sortDmeAusgabeListModel() {
+    	String[] sarray = new String[dmeAusgabeListModel.size()];
+    	for(int i = 0; i < sarray.length; i++) {
+    		sarray[i] = dmeAusgabeListModel.get(i);
+    	}
+    	Arrays.sort(sarray);
+    	dmeAusgabeListModel.clear();
+    	for(int i = 0; i < sarray.length; i++) {
+    		dmeAusgabeListModel.addElement(sarray[i]);
+    	}
+    }
 }
-
-
-
-

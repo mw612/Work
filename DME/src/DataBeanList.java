@@ -4,16 +4,16 @@ public class DataBeanList {
 	private ArrayList<DataBean> dataBeanList = new ArrayList<DataBean>();
 
 	
-	private DataBean produce(	String Anzahl,
-								String BeschaffungsDatum,
-								String Beschaffer,
-								String Preis,
-								String MelderTyp, 
-								String Barcode, 
-								String Seriennummer, 
-								String Location, 
-								String Datum, 
-								String Bemerkung) {
+	private DataBean produce(	String Anzahl,				//0
+								String BeschaffungsDatum,	//1
+								String Beschaffer,			//2
+								String Preis,				//3
+								String MelderTyp, 			//4
+								String Barcode, 			//5
+								String Seriennummer, 		//6
+								String Location, 			//7
+								String Datum, 				//8
+								String Bemerkung) {			//9
 		DataBean dataBean = new DataBean();
 		dataBean.setAnzahl(				Anzahl);
 		dataBean.setBeschaffungsDatum(	BeschaffungsDatum);
@@ -83,6 +83,11 @@ public class DataBeanList {
 	}
 	
 	public void sort() {
+	}
+	
+	//Returns the DataBean Object at the specific Index
+	public DataBean get(int Index) {
+		return dataBeanList.get(Index);
 	}
 	
 	
