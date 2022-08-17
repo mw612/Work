@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DataBeanList {
 	private ArrayList<DataBean> dataBeanList = new ArrayList<DataBean>();
@@ -82,7 +83,19 @@ public class DataBeanList {
 		return size;
 	}
 	
-	public void sort() {
+	public void sortByLocation() {
+		DataBean tmp;
+		int compare;
+		for(int i = 0; i < dataBeanList.size()-1; i++) {
+			for(int j = 0; j < dataBeanList.size() - 2; j++  ) {
+				compare = dataBeanList.get(j).getLocation().compareTo(dataBeanList.get(j+1).getLocation());
+				if(compare > 0) {
+					tmp = dataBeanList.get(j+1);
+					dataBeanList.set(j+1, dataBeanList.get(j));
+					dataBeanList.set(j, tmp);
+				}
+			}
+		}
 	}
 	
 	//Returns the DataBean Object at the specific Index

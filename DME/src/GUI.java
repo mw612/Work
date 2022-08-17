@@ -479,9 +479,10 @@ public class GUI {
 				}
 				
 				pj.printDmeUebergabeSchein(dbl);
-				dmeAusgabeListe.clear();
 				
-				//Wenn der Button Gedrückt wurde, wird die li_dmeAusgabeListe geleert. Dazu das ListModel leeren und UI updaten
+				
+				//Wenn der Button Gedrückt wurde, wird die dmeAusgabeListe und li_dmeAusgabeListe geleert. Dazu das ListModel leeren und UI updaten
+				dmeAusgabeListe.clear();
 				dmeAusgabeListModel.clear();
 				li_dmeAusgabeListe.updateUI();
 				

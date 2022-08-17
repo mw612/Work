@@ -60,6 +60,10 @@ public class PrintJasper {
 	}
 	
 	public void printDmeUebergabeSchein(DataBeanList List) {
+		//Sortiert die ArrayList nach Orten der DataBeans
+		List.sortByLocation();
+		
+		
 		
 		try {
 			JasperDesign jasperDesign = JRXmlLoader.load(jasperFolder+uebergabeschein);
