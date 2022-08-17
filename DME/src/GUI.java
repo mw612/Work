@@ -411,10 +411,11 @@ public class GUI {
 																		, "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				pj.printReparaturSchein(dbl);
+				
+				String timestamp = pj.printReparaturSchein(dbl);
 				Desktop desk = Desktop.getDesktop();
 				try {
-					desk.open(new File(pj.getPdfExportReparatur()));
+					desk.open(new File(pj.getPdfExportReparatur() + timestamp + "-Reparaturschein.pdf"));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -478,10 +479,12 @@ public class GUI {
 					return;
 				}
 				
-				pj.printDmeUebergabeSchein(dbl);
 				
 				
-				//Wenn der Button Gedrückt wurde, wird die dmeAusgabeListe und li_dmeAusgabeListe geleert. Dazu das ListModel leeren und UI updaten
+				String timestamp = pj.printDmeUebergabeSchein(dbl);
+				
+				
+				//Nah der Abarbeitung/Drucken, wird die dmeAusgabeListe und li_dmeAusgabeListe geleert. Dazu das ListModel leeren und UI updaten
 				dmeAusgabeListe.clear();
 				dmeAusgabeListModel.clear();
 				li_dmeAusgabeListe.updateUI();
@@ -489,7 +492,7 @@ public class GUI {
 				
 				Desktop desk = Desktop.getDesktop();
 				try {
-					desk.open(new File(pj.getPdfExportUebergabe()));
+					desk.open(new File(pj.getPdfExportUebergabe() + timestamp + "-Uebergabeschein.pdf"));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}

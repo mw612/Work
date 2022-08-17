@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
@@ -20,8 +22,8 @@ public class PrintJasper {
 	private String reparaturschein = "reparaturschein.jrxml";
 	private String uebergabeschein = "uebergabeschein.jrxml";
 	
-	private String pdfExportReparatur = "R:\\Technik\\Digitale Alarmierung\\Reparaturschein.pdf";
-	private String pdfExportUebergabe = "R:\\Technik\\Digitale Alarmierung\\Uebergabeschein.pdf";
+	private String pdfExportReparatur = "R:\\Technik\\Digitale Alarmierung\\DME-Scheine\\";
+	private String pdfExportUebergabe = "R:\\Technik\\Digitale Alarmierung\\DME-Scheine\\";
 	
 	JasperReport jasperReport = null;
 	JasperPrint printFileName = null;
@@ -29,7 +31,8 @@ public class PrintJasper {
 	PrintJasper(JPanel callingPanel){ this.callingPanel = callingPanel;}
 
 	
-	public void printReparaturSchein(DataBeanList List) {
+	public String printReparaturSchein(DataBeanList List) {
+		final String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
 		
 		try {
 			JasperDesign jasperDesign = JRXmlLoader.load(jasperFolder+reparaturschein);
@@ -38,7 +41,7 @@ public class PrintJasper {
 		catch (JRException e) {
 			JOptionPane.showInternalMessageDialog(null, "Das Jasper Formular Reparaturschein.jrxml konnte nicht geladen werden.", "Error", JOptionPane.ERROR_MESSAGE);
         	e.printStackTrace();
-        	return;
+        	return null;
 		}	
 
 
@@ -51,20 +54,18 @@ public class PrintJasper {
 			printFileName = JasperFillManager.fillReport(jasperReport, hm, beanColDataSource);
 			
 			System.out.println("PDFFile");
-			JasperExportManager.exportReportToPdfFile(printFileName, pdfExportReparatur);
+			JasperExportManager.exportReportToPdfFile(printFileName, pdfExportReparatur + timestamp + "-Reparaturschein.pdf");
 		} 
 		catch (JRException e) {
 			JOptionPane.showInternalMessageDialog(callingPanel, "Jasper konnte kein PDF erstellen!", "Error", JOptionPane.ERROR_MESSAGE);
         	e.printStackTrace();
 		}
+		return timestamp;
 	}
 	
-	public void printDmeUebergabeSchein(DataBeanList List) {
-		//Sortiert die ArrayList nach Orten der DataBeans
-		List.sortByLocation();
-		
-		
-		
+	public String printDmeUebergabeSchein(DataBeanList List) {
+		final String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+		System.out.println(timestamp);
 		try {
 			JasperDesign jasperDesign = JRXmlLoader.load(jasperFolder+uebergabeschein);
 			jasperReport = JasperCompileManager.compileReport(jasperDesign);
@@ -72,7 +73,7 @@ public class PrintJasper {
 		catch (JRException e) {
 			JOptionPane.showInternalMessageDialog(callingPanel, "Das Jasper Formular Übergabeschein.jrxml konnte nicht geladen werden.", "Error", JOptionPane.ERROR_MESSAGE);
         	e.printStackTrace();
-        	return;
+        	return null;
 		}	
 
 
@@ -85,13 +86,14 @@ public class PrintJasper {
 			printFileName = JasperFillManager.fillReport(jasperReport, hm, beanColDataSource);
 			
 			System.out.println("PDFFile");
-			JasperExportManager.exportReportToPdfFile(printFileName, pdfExportUebergabe);
+			JasperExportManager.exportReportToPdfFile(printFileName, pdfExportUebergabe +timestamp+ "-Uebergabeschein.pdf");
 		} 
 		catch (JRException e) {
 			JOptionPane.showInternalMessageDialog(callingPanel, "Jasper konnte kein PDF erstellen!.", "Error", JOptionPane.ERROR_MESSAGE);
         	e.printStackTrace();
-        	return;
+        	return null;
 		}
+		return timestamp;
 	}
 	
 	public String getPdfExportReparatur() {
