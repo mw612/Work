@@ -15,7 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class ReadExcelFile {
-		private JPanel callingPanel;
+	  private JPanel callingPanel;
       File file;
       FileInputStream fis;
       XSSFWorkbook wb;
@@ -40,7 +40,7 @@ public class ReadExcelFile {
     		serialNumber = serialNumber.substring(0, 13);
     	}
     	catch(StringIndexOutOfBoundsException e) {
-    		JOptionPane.showInternalMessageDialog(callingPanel, "Übergebene Seriennummer ist zu kurz, oder nicht vorhanden.", "Error", JOptionPane.ERROR_MESSAGE);
+    		//JOptionPane.showInternalMessageDialog(callingPanel, "Übergebene Seriennummer ist zu kurz.", "Error", JOptionPane.ERROR_MESSAGE);
     		//keine SN eingegeben
     		return -2;
     	}

@@ -65,7 +65,7 @@ public class PrintJasper {
 	
 	public String printDmeUebergabeSchein(DataBeanList List) {
 		final String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-		System.out.println(timestamp);
+
 		try {
 			JasperDesign jasperDesign = JRXmlLoader.load(jasperFolder+uebergabeschein);
 			jasperReport = JasperCompileManager.compileReport(jasperDesign);

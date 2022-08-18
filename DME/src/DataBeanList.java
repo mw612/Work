@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DataBeanList {
 	private ArrayList<DataBean> dataBeanList = new ArrayList<DataBean>();
@@ -55,7 +54,11 @@ public class DataBeanList {
 									Datum, 
 									Bemerkung 
 								  )	
-						);
+				);
+	}
+	
+	public void add(DataBean dataBean) {
+		dataBeanList.add(dataBean);
 	}
 	
 	//Funktion add mit DataBeanListObjekt überladen
@@ -103,5 +106,8 @@ public class DataBeanList {
 		return dataBeanList.get(Index);
 	}
 	
+	public void clear() {
+			dataBeanList.clear();
+	}
 	
 }

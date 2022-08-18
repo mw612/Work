@@ -2,6 +2,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +13,8 @@ import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 
 
@@ -22,11 +27,11 @@ public class GUI {
 	private String path;
     
     private JPanel mainPanel;
+    
     private JPanel dmeMainButtonPanel;
     private JPanel dmeButtonPanel;
     private JPanel dmeContentPanel;
     private JPanel dmeContainerPanel;
-    private JPanel dmeAusgabeListePanel;
 
     private JButton     bt_save;
     private JButton 	bt_repair;
@@ -55,8 +60,12 @@ public class GUI {
     private JTextField  tf_datum;
     private JTextField  tf_bemerkung;
     
-    private JList<String>		li_dmeAusgabeListe;
-    private JScrollPane sp_dmeListScroller;
+    private JList<String>	li_dmeAusgabeListe;
+    private JScrollPane 	sp_dmeListScroller;
+    
+    private JPopupMenu pm_dmeAusgabeListe;
+    private JMenuItem mi_demAusgabeListe_EmptyRows;
+    private JMenuItem mi_demAusgabeListe_CustomRows;
 
     private JComboBox<String>   cb_melderTyp;
     private String cb_melderTyp_content[] = {	"BOSS 910", 
@@ -180,7 +189,7 @@ public class GUI {
         mainPanel.setLayout(        new FlowLayout());
         dmeContentPanel.setLayout(  new GridLayout(0,2));
         dmeMainButtonPanel.setLayout(   new BorderLayout());
-        dmeButtonPanel.setLayout(   new GridLayout(0,3));
+        dmeButtonPanel.setLayout(   new GridLayout(0,2));
         dmeContainerPanel.setLayout(new BorderLayout());
         dmeAusgabeListePanel.setLayout(new BorderLayout());
 
@@ -232,10 +241,19 @@ public class GUI {
         li_dmeAusgabeListe 		= new JList<String>();
         li_dmeAusgabeListe.setLayoutOrientation(JList.VERTICAL);
         sp_dmeListScroller = new JScrollPane(li_dmeAusgabeListe);
-        sp_dmeListScroller.setPreferredSize(new Dimension(450, 350));
+        sp_dmeListScroller.setPreferredSize(new Dimension(450, 340));
+        
+        //PopUpMenu - DME Ausgabe Liste
+        pm_dmeAusgabeListe = new JPopupMenu();
+        mi_demAusgabeListe_EmptyRows = new JMenuItem("Leerzeilen");
+        mi_demAusgabeListe_CustomRows = new JMenuItem("Benutzerdefinierte Zeile");
+        
 
         cb_melderTyp           	= new JComboBox<String>(cb_melderTyp_content);
         cb_location            	= new JComboBox<String>(cb_location_content);
+        
+        
+        //Adding to Panels and Menus
 
         dmeContentPanel.add(lb_scanner);
         dmeContentPanel.add(tf_scannerInput);
@@ -262,6 +280,9 @@ public class GUI {
         dmeContentPanel.add(cb_location);
         dmeContentPanel.add(Box.createHorizontalStrut(10));
         dmeContentPanel.add(Box.createHorizontalStrut(10));
+        
+        pm_dmeAusgabeListe.add(mi_demAusgabeListe_CustomRows);
+        //pm_dmeAusgabeListe.add(mi_demAusgabeListe_EmptyRows); //Aktuell innerhalb der PrintOptions beim erstellen der Scheine abgefragt
   
         dmeMainButtonPanel.add(bt_save,							BorderLayout.NORTH);
         dmeMainButtonPanel.add(Box.createHorizontalStrut(10),	BorderLayout.CENTER);
@@ -269,7 +290,7 @@ public class GUI {
         
         dmeButtonPanel.add(bt_repair);
         dmeButtonPanel.add(bt_handingover);
-        dmeButtonPanel.add(bt_customRow);
+        //dmeButtonPanel.add(bt_customRow); //In Rechtsklick Kontextmenü verschoben.
         
         
         
@@ -282,6 +303,10 @@ public class GUI {
         
         mainPanel.add(dmeContainerPanel);
         mainPanel.add(dmeAusgabeListePanel);
+        
+        
+        
+        
 
 
     }
@@ -354,7 +379,6 @@ public class GUI {
                 	 */
                 	//Zuerst prüfen ob das Element bereits enthalten ist, falls dann löschen.
                 	String[] elementDuplicationCheck;
-                	Boolean dmeElementIsIncluded = false;
                 	for(int i = 0; i < dmeAusgabeListModel.getSize(); i++) {
                 		elementDuplicationCheck = dmeAusgabeListModel.get(i).toString().split("[#]"); //Index 1 ist die RowNumber
                 		if(Integer.valueOf(elementDuplicationCheck[1]) == rowNumber) {
@@ -445,10 +469,17 @@ public class GUI {
 				ReadExcelFile re = new ReadExcelFile(path, mainPanel);
 				DataBeanList dbl = new DataBeanList();
 				
+				//Fügt die Listen Elemente dem zu Druckenden DataBeanList-Objekt an
+				//Wird zuerst geprüft, damit bei leerer Auswahl, trotzdem gedruckt werden kann.
+				if(customRowList != null) {
+					dbl.add(customRowList);
+					customRowList.getDataBeanArrayList().clear();
+				}
+				
 				//Befüllen der globalen Variable dmeAusgabeListe mit zu druckenden Reihennummern
 				// falls dme Liste null oder leer, anlegen und mit aktueller Auswahl füllen.
 				if(dmeAusgabeListe == null) { dmeAusgabeListe = new ArrayList<Integer>(); }
-				if(dmeAusgabeListe.size() == 0) {
+				if(dmeAusgabeListe.size() == 0 && tf_scannerInput.getText().length() > 0) {
 					int rowNumber = re.searchSerialNumber(tf_scannerInput.getText());
 					//Wenn SN nicht gefunden gibt re.searchSerialnumber einen Error Dialog aus und wird hier beendet
 					if(rowNumber > 0) {
@@ -462,14 +493,7 @@ public class GUI {
 					}
 				}
 				
-				//Fügt die Listen Elemente dem zu Druckenden DataBeanList-Objekt an
-				if(customRowList != null) {
-					dbl.add(customRowList);
-					customRowList.getDataBeanArrayList().clear();
-				}
-				
-				printOptions(dbl);
-				
+			
 				if(dbl.size() < 1) {
 					JOptionPane.showInternalMessageDialog(mainPanel, 	"Kein Datensatz zum Drucken vorhanden."
 																		+ "\n\n- Kein Location wechsel stattgefunden"
@@ -480,8 +504,40 @@ public class GUI {
 				}
 				
 				
+				dbl.sortByLocation();
 				
-				String timestamp = pj.printDmeUebergabeSchein(dbl);
+				/*
+				 * Drucken von mehreren Übergabescheinen, wenn verschieden Orte involviert sind.
+				 * 
+				 */
+				
+				DataBeanList helperList = new DataBeanList();
+				String helperString = new String();
+				
+				for(int i = 0; i < dbl.size(); i++) {
+					if(helperString.isEmpty())  //Zu Beginn Leer -> Ort des ersten Elements zuweisen.
+						helperString = dbl.get(i).getLocation();
+					
+					if(helperString.equals(dbl.get(i).getLocation())) //Wenn Orte Gleich mit dem Helper String sind in die HelperListe mit aufnehmen.
+						helperList.add(dbl.get(i));
+					
+					if(!helperString.equals(dbl.get(i).getLocation())) { 	// Falls sich der Ort vom HelperString unterscheidet, die helperListe jedoch gefüllt ist
+						if(helperList.size() > 0) {
+							printOptions(helperList);
+							pj.printDmeUebergabeSchein(helperList);	// Drucke die bisherige Liste, und leer die Helper Variablen, und setze die jeweiligen neuen Werte.
+						}
+						helperList = new DataBeanList();
+						helperList.add(dbl.get(i));
+						helperString  = new String();
+						helperString = dbl.get(i).getLocation();
+					}
+					if(dbl.size()-1 == i) {		// Sollten alle Einträge den gleichen Ort haben, wird beim letzten Element die Liste ausgefruckt.
+						printOptions(helperList);
+						pj.printDmeUebergabeSchein(helperList);
+					}
+				}
+				
+				//String timestamp = pj.printDmeUebergabeSchein(dbl);
 				
 				
 				//Nah der Abarbeitung/Drucken, wird die dmeAusgabeListe und li_dmeAusgabeListe geleert. Dazu das ListModel leeren und UI updaten
@@ -490,18 +546,29 @@ public class GUI {
 				li_dmeAusgabeListe.updateUI();
 				
 				
-				Desktop desk = Desktop.getDesktop();
+				/*Desktop desk = Desktop.getDesktop();
 				try {
 					desk.open(new File(pj.getPdfExportUebergabe() + timestamp + "-Uebergabeschein.pdf"));
 				} catch (IOException e1) {
 					e1.printStackTrace();
-				}
+				}*/
 				
 				focusOnScannerInput();
 			}
         });
         
-        bt_customRow.addActionListener(new ActionListener() {
+        
+        
+        li_dmeAusgabeListe.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)){
+                	pm_dmeAusgabeListe.show(Main.mainWindow, e.getXOnScreen(), e.getYOnScreen());
+                }
+            }
+        }); 
+        
+        mi_demAusgabeListe_CustomRows.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CustomRows customRowDialog = new CustomRows(mainPanel, customRowList);
@@ -513,6 +580,8 @@ public class GUI {
 				addDmeAusgabeListModel(fill.getLocation() + " - " + fill.getMelderTyp() + " - " + fill.getSeriennummer());
 			}        	
         });
+        
+        
         
      
         
@@ -617,7 +686,14 @@ public class GUI {
     
     private void printOptions(DataBeanList dataBeanList) {
     	//Erzeugt Dialog, mit Frage nach Leerzeilen, fängt Abbrechen bzw null Zeilen ab
-    	String rows = JOptionPane.showInternalInputDialog(mainPanel, "Sollen Leerzeilen erzeugt werden?\n\nAnzahl: ");
+    	String Location = "";
+    	try {
+    		Location = dataBeanList.get(0).getLocation();
+    	}
+    	catch(IndexOutOfBoundsException e){
+    		Location = "Reparaturschein";
+    	}
+    	String rows = JOptionPane.showInternalInputDialog(mainPanel, "Sollen Leerzeilen für den Schein:\n\n" + Location + "\n\nerzeugt werden?\n\nAnzahl: ");
     	if(rows == null || rows.equals("")) return;
     	emptyDataBeanRow(dataBeanList, Integer.parseInt(rows));
     }
