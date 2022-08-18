@@ -16,12 +16,12 @@ public class FileBackup {
 		src = Paths.get(path);
 		
 		final String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-		destination = timestamp + "-" + destination;
+		destination = destination + timestamp + "-DME-Invetur.xlsx";
 		dest = Paths.get(destination);
 	}
 	
 	
-	private void backupFile() {
+	public void backupFile() {
 		try {
 			Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {

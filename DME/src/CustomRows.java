@@ -69,7 +69,9 @@ public class CustomRows {
 		sb.append("x");
 		anz= sb.toString();
 		
-		dbl.add(anz, "", "", "", tf_Gerät.getText(), "", tf_Seriennummer.getText(), cb_Location.getSelectedItem().toString(), null, tf_Bemerkung.getText());
+		if(tf_Anzahl.getText().length() > 0 || tf_Seriennummer.getText().length() > 0 || tf_Gerät.getText().length() > 0 || tf_Bemerkung.getText().length() > 0 ) {
+			dbl.add(anz, "", "", "", tf_Gerät.getText(), "", tf_Seriennummer.getText(), cb_Location.getSelectedItem().toString(), null, tf_Bemerkung.getText());
+		}
 	}
 	
 }

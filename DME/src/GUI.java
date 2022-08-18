@@ -547,12 +547,12 @@ public class GUI {
 				li_dmeAusgabeListe.updateUI();
 				
 				
-				/*Desktop desk = Desktop.getDesktop();
+				Desktop desk = Desktop.getDesktop();
 				try {
-					desk.open(new File(pj.getPdfExportUebergabe() + timestamp + "-Uebergabeschein.pdf"));
+					desk.open(new File("R:\\Technik\\Digitale Alarmierung\\DME-Scheine"));
 				} catch (IOException e1) {
 					e1.printStackTrace();
-				}*/
+				}
 				
 				focusOnScannerInput();
 			}

@@ -18,15 +18,18 @@ import javax.swing.JFrame;
 
 
 public class Main {
-	private 	static 	String 	pathDmeListe 	= "R:\\Technik\\Digitale Alarmierung\\DME-Test.xlsx";
+	private 	static 	String 	pathDmeListe 	= "R:\\Technik\\Digitale Alarmierung\\DME-Inventar.xlsx";
+	private 	static 	String 	pathBackup	 	= "R:\\Wirtz\\DME Backup\\";
 	protected 	static 	JFrame 	mainWindow 		= new JFrame("DME-Liste");
 	
 	public static void main(String[] args) {
 		GUI mainGUI = new GUI(pathDmeListe);
         mainGUI.create();
         mainGUI.loadWindow();
-
         mainGUI.createListener();
+        
+        FileBackup fileBackup = new FileBackup(pathDmeListe, pathBackup);
+        fileBackup.backupFile();
 	}
 	
 	
