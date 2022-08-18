@@ -28,6 +28,7 @@ public class GUI {
     
     private JPanel mainPanel;
     
+    private JPanel dmeAusgabeListePanel;
     private JPanel dmeMainButtonPanel;
     private JPanel dmeButtonPanel;
     private JPanel dmeContentPanel;
