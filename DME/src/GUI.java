@@ -50,6 +50,8 @@ public class GUI {
     private JLabel      lb_bemerkung;
     private JLabel      lb_location;
     private JLabel		lb_dmeAusgabeListe;
+    private JLabel 		lb_reparaturInAusgang;
+    private JLabel		lb_reparaturInAusgangAnzahl;
 
     private JTextField  tf_scannerInput;
     private JTextField  tf_beschaffungsdatum;
@@ -70,6 +72,7 @@ public class GUI {
 
     private JComboBox<String>   cb_melderTyp;
     private String cb_melderTyp_content[] = {	"BOSS 910", 
+    											"BOSS 910V",
     											"BOSS 915", 
     											"BOSS 915V", 
     											"BOSS 925",
@@ -83,6 +86,7 @@ public class GUI {
     protected static String cb_location_content[] =  {   "Lager",
     											"Reparatur - Ausgang",
     											"Reparatur - in Bearbeitung",
+    											"Aussortiert",
                                                 "DN RTW 20",
                                                 "Dr. Kowalzik",
                                                 "DRK Düren EE 01",
@@ -161,7 +165,7 @@ public class GUI {
     
     //Speichern von Row Numbern, wenn Location gewechselt wird. Wird beim Aufrufen von DME Ausgeben (bt_handingover) genutzt und geleert.
     private ArrayList<Integer> dmeAusgabeListe = new ArrayList<Integer>();
-    private String dmeLocationPuffer;
+    private String dmeLocationPuffer = "";
     
     private DefaultListModel<String> dmeAusgabeListModel = new DefaultListModel<String>();
     
@@ -194,8 +198,6 @@ public class GUI {
         dmeContainerPanel.setLayout(new BorderLayout());
         dmeAusgabeListePanel.setLayout(new BorderLayout());
 
-
-        
         mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
 
         createGUIElements();
@@ -227,6 +229,8 @@ public class GUI {
         lb_datum               	= new JLabel(   "Datum:");
         lb_bemerkung           	= new JLabel(   "Bemerkung:");
         lb_location            	= new JLabel(   "Standort:");
+        lb_reparaturInAusgang	= new JLabel(	"");
+        lb_reparaturInAusgangAnzahl = new JLabel("");
         lb_dmeAusgabeListe		= new JLabel(	"DME Ausgabe Liste");	
 
         tf_scannerInput        	= new JTextField(15);
@@ -279,6 +283,8 @@ public class GUI {
         dmeContentPanel.add(tf_bemerkung);
         dmeContentPanel.add(lb_location);
         dmeContentPanel.add(cb_location);
+        dmeContentPanel.add(lb_reparaturInAusgang);
+        dmeContentPanel.add(lb_reparaturInAusgangAnzahl);
         dmeContentPanel.add(Box.createHorizontalStrut(10));
         dmeContentPanel.add(Box.createHorizontalStrut(10));
         
@@ -403,6 +409,9 @@ public class GUI {
 
                 excelFile.closeFISFOS();
                 
+                countRepairOutRows();
+               
+               
                 
                 focusOnScannerInput();
             }
@@ -716,5 +725,15 @@ public class GUI {
     	for(int i = 0; i < sarray.length; i++) {
     		dmeAusgabeListModel.addElement(sarray[i]);
     	}
+    }
+    
+    private void countRepairOutRows() {
+    	 //Zählen der Reparaturbedürftigen Melder
+        ReadExcelFile ref = new ReadExcelFile(path, mainPanel);
+        ArrayList<Integer> repairList = ref.searchRowsRepair();
+        lb_reparaturInAusgangAnzahl.setText(Integer.toString(repairList.size()));
+        repairList = null;
+        ref.closeFIS();
+        ref = null;
     }
 }
