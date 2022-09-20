@@ -229,7 +229,7 @@ public class GUI {
         lb_datum               	= new JLabel(   "Datum:");
         lb_bemerkung           	= new JLabel(   "Bemerkung:");
         lb_location            	= new JLabel(   "Standort:");
-        lb_reparaturInAusgang	= new JLabel(	"");
+        lb_reparaturInAusgang	= new JLabel(	"Ausstehende Reparatur: ");
         lb_reparaturInAusgangAnzahl = new JLabel("");
         lb_dmeAusgabeListe		= new JLabel(	"DME Ausgabe Liste");	
 
@@ -283,6 +283,8 @@ public class GUI {
         dmeContentPanel.add(tf_bemerkung);
         dmeContentPanel.add(lb_location);
         dmeContentPanel.add(cb_location);
+        dmeContentPanel.add(Box.createHorizontalStrut(10));
+        dmeContentPanel.add(Box.createHorizontalStrut(10));
         dmeContentPanel.add(lb_reparaturInAusgang);
         dmeContentPanel.add(lb_reparaturInAusgangAnzahl);
         dmeContentPanel.add(Box.createHorizontalStrut(10));
@@ -312,8 +314,8 @@ public class GUI {
         mainPanel.add(dmeAusgabeListePanel);
         
         
-        
-        
+        //Nachdem alle GUI Elemente erstellt wurden, die Reparatur Reihen zählen.
+        countRepairOutRows();
 
 
     }
